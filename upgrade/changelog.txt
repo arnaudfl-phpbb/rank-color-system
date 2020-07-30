@@ -1,0 +1,5121 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.2
+
+#####################
+## -- Changelog -- ##
+#####################
+
+## -- contents:
+	v0.0.1 to v0.0.2 - 2005/11/12
+	v0.0.2 to v0.0.3 - 2005/11/22
+	v0.0.3 to v0.0.4 - 2005/12/31
+	v0.0.4 to v0.0.5 - 2006/01/10
+	v0.0.5 to v0.0.6 - 2006/03/07
+	v0.0.6 to v0.0.6a - 2006/03/10
+	v0.0.6a to v0.0.7 - 2006/04/08
+	v0.0.7 to v0.0.7a - 2006/04/16
+	v0.0.7a to v0.0.7b - 2006/04/25
+	v0.0.7b to v0.0.7c - 2006/04/30
+	v0.0.7c to v0.0.7d - 2006/05/01
+	v0.0.7d to v0.0.8 - 2006/05/05
+	v0.0.8 to v0.0.8a - 2006/05/20
+	v0.0.8a to v0.0.8b - 2006/06/05
+	v0.0.8b to v0.0.8c - 2006/06/14
+	v0.0.8c to v0.0.9 - 2006/07/07
+	v0.0.9 to v0.0.9a - 2006/07/15
+	v0.0.9a to v0.1.0 - 2006/08/15
+	v0.1.0 to v0.1.0a - 2006/08/20
+	v0.1.0a to v0.1.0b - 2006/08/24
+	v0.1.0b to v0.1.1 - 2006/09/23
+	v0.1.1 to v0.1.2 - 2006/10/29
+
+#########################################
+## -- v0.0.1 to v0.0.2 - 2005/11/12 -- ##
+#########################################
+
+## -- files to edit: (6)
+	groupcp.php
+	index.php
+	memberlist.php
+	modcp.php
+	admin/admin_groups.php
+	admin/admin_users.php
+## -- files included: (6)
+	root/admin/admin_rcs.php
+	root/includes/class_rcs.php
+	root/language/lang_english/lang_main_rcs.php
+	translations/french/root/language/lang_french/lang_main_rcs.php
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+	root/templates/subSilver/admin/rcs_list_body.tpl
+
+#
+#-----[ SQL ]-------------------------------------------------
+#
+
+ALTER TABLE phpbb_rcs ADD rcs_single SMALLINT(1) DEFAULT '0' NOT NULL AFTER rcs_color;
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/includes/class_rcs.php to includes/class_rcs.php
+copy root/language/lang_english/lang_main_rcs.php to language/lang_english/lang_main_rcs.php
+copy translations/french/root/language/lang_french/lang_main_rcs.php to language/lang_french/lang_main_rcs.php
+copy root/templates/subSilver/admin/rcs_edit_body.tpl to templates/subSilver/admin/rcs_edit_body.tpl
+copy root/templates/subSilver/admin/rcs_list_body.tpl to templates/subSilver/admin/rcs_list_body.tpl
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					$group_sql = str_replace('SELECT ', 'SELECT group_color, ', $group_sql);
+//-- fin mod : rank color system -----------------------------------------------
+
+					if ( !($result = $db->sql_query($group_sql)) )
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+					if ( !($result = $db->sql_query($group_sql)) )
+#
+#-----[ FIND ]------------------------------------------------
+#
+					$group_name = $group_name_row['group_name'];
+
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					// update user color
+					if ( !empty($group_name_row['group_color']) )
+					{
+						$rcs->update_colors($row['user_id'], $group_name_row['group_color']);
+					}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+					$group_name = $group_name_row['group_name'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					// delete users color
+					$rcs->update_colors($sql_in, false, true);	
+//-- fin mod : rank color system -----------------------------------------------
+
+					//
+					// Email users when they are approved
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+					//
+					// Email users when they are approved
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# first time (postgresql)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+			break;
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			break;
+#
+#-----[ FIND ]------------------------------------------------
+#
+# second time (oracle)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+			break;
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			break;
+#
+#-----[ FIND ]------------------------------------------------
+#
+# third time (default)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+			break;
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			break;
+#
+#-----[ FIND ]------------------------------------------------
+#
+	if ( !($result = $db->sql_query($sql)) )
+	{
+		message_die(GENERAL_ERROR, 'Could not query forums information
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$display_rcs = $display_level = '';
+
+// user color display
+if ( isset($HTTP_POST_VARS['rcs']) || isset($HTTP_GET_VARS['rcs']) )
+{
+	$display_rcs = (!empty($HTTP_POST_VARS['rcs'])) ? $HTTP_POST_VARS['rcs'] : $HTTP_GET_VARS['rcs'];
+}
+
+if ( !empty($display_rcs) )
+{
+	$sql_where = ( $display_rcs != -1 ) ? 'user_color = ' . intval($display_rcs) . ' AND ' : 'user_color = 0 AND user_level = ' . USER . ' AND ';
+}
+
+// level display
+if ( isset($HTTP_POST_VARS['level']) || isset($HTTP_GET_VARS['level']) )
+{
+	$display_level = (!empty($HTTP_POST_VARS['level'])) ? $HTTP_POST_VARS['level'] : $HTTP_GET_VARS['level'];
+}
+if ( !empty($display_level) )
+{
+	$sql_where = ( $display_level != -1 ) ? 'user_level = ' . intval($display_level) . ' AND ' : 'user_level = ' . USER . ' AND ';
+}
+
+$display = (empty($display_level) ? '' : '&amp;level=' . intval($display_level)) . (empty($display_rcs) ? '' : '&amp;rcs=' . intval($display_rcs));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc = $rcs_level = $rcs_gc = '';
+
+// user color display
+if ( isset($HTTP_POST_VARS['uc']) || isset($HTTP_GET_VARS['uc']) )
+{
+	$rcs_uc = (!empty($HTTP_POST_VARS['uc'])) ? $HTTP_POST_VARS['uc'] : $HTTP_GET_VARS['uc'];
+}
+
+if ( !empty($rcs_uc) )
+{
+	$sql_where = ( $rcs_uc != -1 ) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : 'user_color = 0 AND user_level = ' . USER . ' AND ';
+}
+
+// level color display
+if ( isset($HTTP_POST_VARS['level']) || isset($HTTP_GET_VARS['level']) )
+{
+	$rcs_level = (!empty($HTTP_POST_VARS['level'])) ? $HTTP_POST_VARS['level'] : $HTTP_GET_VARS['level'];
+}
+if ( !empty($rcs_level) )
+{
+	$sql_where = ( $rcs_level != -1 ) ? 'user_level = ' . intval($rcs_level) . ' AND ' : 'user_level = ' . USER . ' AND ';
+}
+
+// group color display
+if ( isset($HTTP_POST_VARS['gc']) || isset($HTTP_GET_VARS['gc']) )
+{
+	$rcs_gc = (!empty($HTTP_POST_VARS['gc'])) ? $HTTP_POST_VARS['gc'] : $HTTP_GET_VARS['gc'];
+}
+
+$display = (empty($rcs_gc) ? '' : '&amp;gc=' . intval($rcs_gc)) . (empty($rcs_level) ? '' : '&amp;level=' . intval($rcs_level)) . (empty($rcs_uc) ? '' : '&amp;uc=' . intval($rcs_uc));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full lines are longer
+#
+$sql = "SELECT username
+	FROM
+	WHERE
+	ORDER BY $order_by
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( !empty($rcs_gc) )
+{
+	$sql = 'SELECT u.user_level, u.user_color, u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_interests, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, ug.user_pending
+		FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug, ' . USERS_TABLE . ' u
+		WHERE g.group_color = ' . intval($rcs_gc) . '
+			AND g.group_id = ug.group_id
+			AND ug.user_pending = 0
+			AND u.user_id = ug.user_id
+		ORDER BY ' . $order_by;
+}
+else
+{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+
+if ( !empty($sql_where) )
+{
+	$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+
+	if ( !empty($sql_where) )
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# this is a partial search: the full lines are longer
+#
+$sql = "SELECT count(*)
+	FROM
+	WHERE
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($rcs_gc) )
+	{
+		$sql = 'SELECT count(*) AS total
+			FROM ' . USERS_TABLE . ' u, ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+			WHERE g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id'; 
+	}
+	else
+	{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($sql_where) )
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		if ( !empty($sql_where) )
+		{
+			$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+		}
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+modcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+MOD-*/
+//-- add
+		$sql = "SELECT t.*, u.username, u.user_id, u.user_level, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
+			WHERE t.forum_id = $forum_id
+				AND t.topic_poster = u.user_id
+				AND p.post_id = t.topic_first_post_id
+				AND p2.post_id = t.topic_last_post_id
+				AND u2.user_id = p2.poster_id
+			ORDER BY t.topic_type DESC, t.topic_last_post_id DESC
+			LIMIT $start, " . $board_config['topics_per_page'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+MOD-*/
+//-- add
+		$sql = 'SELECT t.*, u.username, u.user_id, u.user_level, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			FROM ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . ' u, ' . POSTS_TABLE . ' p, ' . POSTS_TABLE . ' p2, ' . USERS_TABLE . ' u2
+			WHERE t.forum_id = ' . $forum_id . '
+				AND t.topic_poster = u.user_id
+				AND p.post_id = t.topic_first_post_id
+				AND p2.post_id = t.topic_last_post_id
+				AND u2.user_id = p2.poster_id
+			ORDER BY t.topic_type DESC, t.topic_last_post_id DESC
+			LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+				// delete group membership color
+				$rcs->update_colors(intval($rows[$i]['user_id']));
+//-- fin mod : rank color system -----------------------------------------------
+
+			}
+		}
+
+		//
+		// Delete Group
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			}
+		}
+
+		//
+		// Delete Group
+#
+#-----[ FIND ]------------------------------------------------
+#
+				if ( $delete_old_moderator )
+				{
+
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					// delete old moderator color
+					$rcs->update_colors($group_info['group_moderator']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				if ( $delete_old_moderator )
+				{
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ($group_info['group_color'] != $group_color)
+			{
+				// update group membership color (included moderator)
+				$sql = 'SELECT user_id
+					FROM ' . USER_GROUP_TABLE . '
+					WHERE group_id = ' . $group_id;
+				$result = $db->sql_query($sql, false, __LINE__, __FILE__);
+				$rows = $db->sql_fetchrowset($result);
+
+				for ($i = 0; $i < count($rows); $i++)
+				{
+					$sql = 'UPDATE ' . USERS_TABLE . '
+						SET user_color = \'' . $group_color . '\'
+						WHERE user_id = ' . intval($rows[$i]['user_id']);
+					$db->sql_query($sql, false, __LINE__, __FILE__);
+				}
+
+				// recache whosonline color groups
+				if ($board_config['rcs_enable'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ($group_info['group_color'] != $group_color)
+			{
+				// recache color groups
+				if ($board_config['rcs_enable'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ( !empty($group_color) )
+			{
+				$rcs->update_colors(intval($group_moderator), $group_color);
+
+				// recache whosonline color groups
+				if ($board_config['enable_rcs'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ( !empty($group_color) )
+			{
+				// recache color groups
+				if ($board_config['enable_rcs'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$rcs_select_box = $rcs->select_colors($this_userdata['user_color']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$rcs_select_box = $rcs->select_colors($this_userdata['user_color'], $single=true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+#########################################
+## -- v0.0.2 to v0.0.3 - 2005/11/22 -- ##
+#########################################
+
+## -- files to edit: (6)
+	groupcp.php
+	memberlist.php
+	modcp.php
+	privmsg.php
+	viewtopic.php
+	templates/subSilver/subSilver.cfg
+## -- files included: (6)
+	root/admin/admin_rcs.php
+	root/language/lang_english/lang_main_rcs.php
+	translations/french/root/language/lang_french/lang_main_rcs.php
+	root/templates/colorpicker.js
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+	root/templates/subSilver/images/rcs_pick_color.gif
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/language/lang_english/lang_main_rcs.php to language/lang_english/lang_main_rcs.php
+copy translations/french/root/language/lang_french/lang_main_rcs.php to language/lang_french/lang_main_rcs.php
+copy root/templates/colorpicker.js to templates/colorpicker.js
+copy root/templates/subSilver/admin/rcs_edit_body.tpl to templates/subSilver/admin/rcs_edit_body.tpl
+copy root/templates/subSilver/images/rcs_pick_color.gif to templates/subSilver/images/rcs_pick_color.gif
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	$username = $group_moderator['username'];
+MOD-*/
+//-- add
+	$username = $rcs->get_colors($group_moderator, $group_moderator['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$username = $group_moderator['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+		'MOD_USERNAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		'MOD_USERNAME' => $username,
+MOD-*/
+//-- add
+		'MOD_USERNAME' => $rcs->get_colors($group_moderator, $group_moderator['username']),
+//-- fin mod : rank color system --------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		$username = $group_members[$i]['username'];
+MOD-*/
+//-- add
+		$username = $rcs->get_colors($group_members[$i], $group_members[$i]['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$username = $group_members[$i]['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+				'USERNAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				'USERNAME' => $username,
+MOD-*/
+//-- add
+				'USERNAME' => $rcs->get_colors($group_members[$i], $group_members[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				$username = $modgroup_pending_list[$i]['username'];
+MOD-*/
+//-- add
+				$username = $rcs->get_colors($modgroup_pending_list[$i], $modgroup_pending_list[$i]['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$username = $modgroup_pending_list[$i]['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+					'USERNAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+					'USERNAME' => $username,
+MOD-*/
+//-- add
+					'USERNAME' => $rcs->get_colors($modgroup_pending_list[$i], $modgroup_pending_list[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		$username = $row['username'];
+MOD-*/
+//-- add
+		$username = $rcs->get_colors($row, $row['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$username = $row['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+			'USERNAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'USERNAME' => $username,
+MOD-*/
+//-- add
+			'USERNAME' => $rcs->get_colors($row, $row['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+modcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+					$poster = $postrow[$i]['username'];
+MOD-*/
+					$poster = ( $poster_id == ANONYMOUS ) ? ( ( $postrow[$i]['post_username'] != '' ) ? $postrow[$i]['post_username'] : $lang['Guest'] ) : $rcs->get_colors($postrow[$i], $postrow[$i]['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+					$poster = $postrow[$i]['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+						'POSTER_NAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+						'POSTER_NAME' => $poster,
+MOD-*/
+						'POSTER_NAME' => ( $poster_id == ANONYMOUS ) ? ( ( $postrow[$i]['post_username'] != '' ) ? $postrow[$i]['post_username'] : $lang['Guest'] ) : $rcs->get_colors($postrow[$i], $postrow[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+privmsg.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD	
+	$username_from = $privmsg['username_1'];
+MOD-*/
+//-- add
+	$username_from = $rcs->get_colors($privmsg, $privmsg['username_1'], '_1');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$username_from = $privmsg['username_1'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	$username_to = $privmsg['username_2'];
+MOD-*/
+//-- add
+	$username_to = $rcs->get_colors($privmsg, $privmsg['username_2'], '_2');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$username_to = $privmsg['username_2'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+		'MESSAGE_TO' =>
+		'MESSAGE_FROM' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		'MESSAGE_TO' => $username_to,
+		'MESSAGE_FROM' => $username_from,
+MOD-*/
+//-- add
+		'MESSAGE_TO' => $rcs->get_colors($privmsg, $privmsg['username_2'], '_2'),
+		'MESSAGE_FROM' => $rcs->get_colors($privmsg, $privmsg['username_1'], '_1'),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		$msg_username = $row['username'];
+MOD-*/
+		$msg_username = $rcs->get_colors($row, $row['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$msg_username = $row['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+			'FROM' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'FROM' => $msg_username,
+MOD-*/
+			'FROM' => $rcs->get_colors($row, $row['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewtopic.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$poster = ( $poster_id == ANONYMOUS ) ? ( ( $postrow[$i]['post_username'] != '' ) ? $postrow[$i]['post_username'] : $lang['Guest'] ) : $rcs->get_colors($postrow[$i], $postrow[$i]['username']);
+//-- fin mod : rank color system -----------------------------------------------
+
+	$temp_url = '';
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$temp_url = '';
+#
+#-----[ FIND ]------------------------------------------------
+#
+		'POSTER_NAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		'POSTER_NAME' => $poster,
+MOD-*/
+		'POSTER_NAME' => ( $poster_id == ANONYMOUS ) ? ( ( $postrow[$i]['post_username'] != '' ) ? $postrow[$i]['post_username'] : $lang['Guest'] ) : $rcs->get_colors($postrow[$i], $postrow[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/topic_review.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			$poster = $row['username'];
+MOD-*/
+//-- add
+			$poster = $rcs->get_colors($row, $row['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			$poster = $row['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+				'POSTER_NAME' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				'POSTER_NAME' => $poster,
+MOD-*/
+				'POSTER_NAME' => ( $poster_id == ANONYMOUS ) ? ( ( $row['post_username'] != '' ) ? $row['post_username'] : $lang['Guest'] ) : $rcs->get_colors($row, $row['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/subSilver.cfg
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$images['cmd_up_arrow'] = "$current_template_images/bs_arrow_up.gif";
+$images['cmd_down_arrow'] = "$current_template_images/bs_arrow_down.gif";
+$images['cmd_cancel'] = "$current_template_images/{LANG}/bs_command_cancel.gif";
+$images['cmd_create'] = "$current_template_images/{LANG}/bs_command_create.gif";
+$images['cmd_delete'] = "$current_template_images/{LANG}/bs_command_delete.gif";
+$images['cmd_edit'] = "$current_template_images/{LANG}/bs_command_edit.gif";
+$images['cmd_regen'] = "$current_template_images/{LANG}/bs_command_regen.gif";
+$images['cmd_submit'] = "$current_template_images/{LANG}/bs_command_submit.gif";
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+// command
+$images['cmd_up_arrow'] = "$current_template_images/bs_arrow_up.gif";
+$images['cmd_down_arrow'] = "$current_template_images/bs_arrow_down.gif";
+$images['cmd_cancel'] = "$current_template_images/{LANG}/bs_command_cancel.gif";
+$images['cmd_create'] = "$current_template_images/{LANG}/bs_command_create.gif";
+$images['cmd_delete'] = "$current_template_images/{LANG}/bs_command_delete.gif";
+$images['cmd_edit'] = "$current_template_images/{LANG}/bs_command_edit.gif";
+$images['cmd_regen'] = "$current_template_images/{LANG}/bs_command_regen.gif";
+$images['cmd_submit'] = "$current_template_images/{LANG}/bs_command_submit.gif";
+// color picker
+$images['rcs_pick_color'] = "$current_template_images/rcs_pick_color.gif";
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+#########################################
+## -- v0.0.3 to v0.0.4 - 2005/12/31 -- ##
+#########################################
+
+## -- files to edit: (2)
+	memberlist.php
+	templates/subSilver/memberlist_body.tpl
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+$display = (empty($rcs_gc) ? '' : '&amp;gc=' . intval($rcs_gc)) . (empty($rcs_level) ? '' : '&amp;level=' . intval($rcs_level)) . (empty($rcs_uc) ? '' : '&amp;uc=' . intval($rcs_uc));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+// hidden fields
+$rcs_hidden_fields = '<input type="hidden" name="gc" value="' . $rcs_gc . '" />';
+$rcs_hidden_fields .= '<input type="hidden" name="level" value="' . $rcs_level . '" />';
+$rcs_hidden_fields .= '<input type="hidden" name="uc" value="' . $rcs_uc . '" />';
+
+// display
+#
+#-----[ FIND ]------------------------------------------------
+#
+'S_MODE_SELECT' =>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	'RCS_HIDDEN_FIELDS' => $rcs_hidden_fields,
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full lines are longer
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( !empty($rcs_gc) )
+{
+	$sql = 'SELECT
+		FROM
+		WHERE
+			AND
+			AND
+			AND
+		ORDER BY ' . $order_by;
+}
+else
+{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( !empty($rcs_gc) )
+{
+	$sql = 'SELECT u.user_level, u.user_color, u.username, u.user_id, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_interests, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_avatar, u.user_avatar_type, u.user_allowavatar, ug.user_pending
+		FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug, ' . USERS_TABLE . ' u
+		WHERE g.group_color = ' . intval($rcs_gc) . '
+			AND g.group_id = ug.group_id
+			AND ug.user_pending = 0
+			AND u.user_id = ug.user_id
+		GROUP BY ' . $order_by;
+}
+else
+{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full lines are longer
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($rcs_gc) )
+	{
+		$sql = 'SELECT count(*) AS total
+			FROM
+			WHERE
+				AND
+				AND
+				AND
+	}
+	else
+	{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($rcs_gc) )
+	{
+		$sql = 'SELECT count(*) AS total
+			FROM ' . USERS_TABLE . ' u, ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+			WHERE g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+			GROUP BY u.user_id'; 
+	}
+	else
+	{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/memberlist_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+</form>
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+</form>
+#
+#-----[ IN-LINE BEFORE, ADD ]---------------------------------
+#
+{RCS_HIDDEN_FIELDS}
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+#########################################
+## -- v0.0.4 to v0.0.5 - 2006/01/20 -- ##
+#########################################
+
+## -- files to edit:
+	memberlist.php
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc = $rcs_level = $rcs_gc = '';
+
+// user color display
+if (
+{
+	$rcs_uc =
+}
+
+if (
+{
+	$sql_where =
+}
+
+// level color display
+if (
+{
+	$rcs_level =
+}
+if (
+{
+	$sql_where =
+}
+
+// group color display
+if (
+{
+	$rcs_gc =
+}
+
+// hidden fields
+$rcs_hidden_fields =
+$rcs_hidden_fields .=
+$rcs_hidden_fields .=
+
+// display
+$display =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc = $rcs_level = $rcs_gc = 0;
+$rcs_hidden_fields = '';
+
+// prepare parms
+$lists = array(
+	'usercolor' => array('parm' => 'rcs_uc', 'var' => 'uc'),
+	'levelcolor' => array('parm' => 'rcs_level', 'var' => 'level'),
+	'groupcolor' => array('parm' => 'rcs_gc', 'var' => 'gc'),
+);
+
+foreach ( $lists as $list => $data )
+{
+	// get vars
+	$$data['parm'] = (!empty($HTTP_POST_VARS[$data['var']])) ? $HTTP_POST_VARS[$data['var']] : ((!empty($HTTP_GET_VARS[$data['var']])) ? $HTTP_GET_VARS[$data['var']] : 0);
+
+	// hidden fields
+	$rcs_hidden_fields .= '<input type="hidden" name="' . $data['var'] . '" value="' . intval($$data['parm']) . '" />';
+}
+
+// user color display
+if ( !empty($rcs_uc) )
+{
+	$sql_where = ( $rcs_uc != -1 ) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : 'user_color = 0 AND user_level = ' . USER . ' AND ';
+}
+
+// level color display
+if ( !empty($rcs_level) )
+{
+	$sql_where = ( $rcs_level != -1 ) ? 'user_level = ' . intval($rcs_level) . ' AND ' : 'user_level = ' . USER . ' AND ';
+}
+
+// group color display
+if ( !empty($rcs_gc) )
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = (empty($rcs_gc) ? '' : '&amp;gc=' . intval($rcs_gc)) . (empty($rcs_level) ? '' : '&amp;level=' . intval($rcs_level)) . (empty($rcs_uc) ? '' : '&amp;uc=' . intval($rcs_uc));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( !empty($rcs_gc) )
+{
+	$sql = 'SELECT
+		FROM
+		WHERE
+			AND
+			AND
+			AND
+		GROUP BY
+}
+else
+{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+
+	if ( !empty($sql_where) )
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+
+if ( !empty($sql_join) )
+{
+	$sql = str_replace('username', 'u.username', $sql);
+	$sql = str_replace('user_', 'u.user_', $sql);
+	$sql = str_replace('FROM ' . USERS_TABLE, 'FROM ' . USERS_TABLE . ' u' . $sql_join, $sql);
+	$sql = str_replace('ORDER BY', 'GROUP BY username ORDER BY', $sql);
+}
+
+if ( !empty($sql_where) )
+{
+	$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($rcs_gc) )
+	{
+		$sql = 'SELECT
+			FROM
+			WHERE
+				AND
+				AND
+				AND
+			GROUP BY
+	}
+	else
+	{
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		if ( !empty($sql_where) )
+		{
+			$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+		}
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if ( !empty($sql_join) )
+	{
+		$sql = str_replace('username', 'u.username', $sql);
+		$sql = str_replace('user_', 'u.user_', $sql);
+		$sql = str_replace('FROM ' . USERS_TABLE, 'FROM ' . USERS_TABLE . ' u' . $sql_join, $sql);
+		$sql = str_replace('ORDER BY', 'GROUP BY username ORDER BY', $sql);
+	}
+
+	if ( !empty($sql_where) )
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+#########################################
+## -- v0.0.5 to v0.0.6 - 2006/03/07 -- ##
+#########################################
+
+## -- files to edit: (8)
+	index.php
+	memberlist.php
+	modcp.php
+	search.php
+	viewforum.php
+	admin/admin_groups.php
+	admin/admin_users.php
+	templates/subSilver/index_body.tpl
+## -- files included: (3)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/admin/admin_rcs_settings.php to admin/admin_rcs_settings.php
+copy root/includes/class_rcs.php to includes/class_rcs.php
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full line is longer
+#
+//-- add
+		$style_color = $rcs->get_colors($row);
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$style_color = $rcs->get_colors($row);
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full line is longer
+#
+//-- add
+		$style_color = ( !empty($row['group_color']) && !empty($board_config['rcs_enable']) ) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=" . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full line is longer
+#
+//-- add
+		'NEWEST_USER' => sprintf($lang['Newest_user'], '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=$newest_uid") . '"' . $newest_color . '>', $newest_user, '</a>'),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		'NEWEST_USER' => sprintf($lang['Newest_user'], '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $newest_uid) . '"' . $newest_color . '>', $newest_user, '</a>'),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full line is longer
+#
+//-- add
+								$style_color = $rcs->get_colors($forum_data[$j]);
+								$last_post .= ( $forum_data[$j]['user_id'] == ANONYMOUS ) ? ( ($forum_data[$j]['post_username'] != '' ) ? $forum_data[$j]['post_username'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $forum_data[$j]['user_id']) . '"' . $style_color . '>' . $forum_data[$j]['username'] . '</a> ';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+								$style_color = $rcs->get_colors($forum_data[$j]);
+								$last_post .= ($forum_data[$j]['user_id'] == ANONYMOUS) ? ((($forum_data[$j]['post_username'] != '') ? $forum_data[$j]['post_username'] : $lang['Guest']) . '&nbsp;') : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $forum_data[$j]['user_id']) . '"' . $style_color . '>' . $forum_data[$j]['username'] . '</a>&nbsp;';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This is a partial search: the full line is longer
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc = $rcs_level = $rcs_gc = 0;
+$rcs_hidden_fields = '';
+
+// prepare parms
+$lists = array(
+	'usercolor' => array('parm' => 'rcs_uc', 'var' => 'uc'),
+	'levelcolor' => array('parm' => 'rcs_level', 'var' => 'level'),
+	'groupcolor' => array('parm' => 'rcs_gc', 'var' => 'gc'),
+);
+
+foreach ( $lists as $list => $data )
+{
+	// get vars
+	$$data['parm'] = (!empty($HTTP_POST_VARS[$data['var']])) ? $HTTP_POST_VARS[$data['var']] : ((!empty($HTTP_GET_VARS[$data['var']])) ? $HTTP_GET_VARS[$data['var']] : 0);
+
+	// hidden fields
+	$rcs_hidden_fields .= '<input type="hidden" name="' . $data['var'] . '" value="' . intval($$data['parm']) . '" />';
+}
+
+// user color display
+if ( !empty($rcs_uc) )
+{
+	$sql_where = ( $rcs_uc != -1 ) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : 'user_color = 0 AND user_level = ' . USER . ' AND ';
+}
+
+// level color display
+if ( !empty($rcs_level) )
+{
+	$sql_where = ( $rcs_level != -1 ) ? 'user_level = ' . intval($rcs_level) . ' AND ' : 'user_level = ' . USER . ' AND ';
+}
+
+// group color display
+if ( !empty($rcs_gc) )
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = (empty($rcs_gc) ? '' : '&amp;gc=' . intval($rcs_gc)) . (empty($rcs_level) ? '' : '&amp;level=' . intval($rcs_level)) . (empty($rcs_uc) ? '' : '&amp;uc=' . intval($rcs_uc));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc = $rcs_level = $rcs_gc = 0;
+$rcs_hidden_fields = '';
+
+// prepare parms
+$lists = array(
+	'usercolor' => array('parm' => 'rcs_uc', 'var' => 'uc'),
+	'levelcolor' => array('parm' => 'rcs_level', 'var' => 'level'),
+	'groupcolor' => array('parm' => 'rcs_gc', 'var' => 'gc'),
+);
+
+foreach ($lists as $list => $data)
+{
+	// get vars
+	$$data['parm'] = (!empty($HTTP_POST_VARS[$data['var']])) ? intval($HTTP_POST_VARS[$data['var']]) : ((!empty($HTTP_GET_VARS[$data['var']])) ? intval($HTTP_GET_VARS[$data['var']]) : 0);
+
+	// hidden fields
+	$rcs_hidden_fields .= '<input type="hidden" name="' . $data['var'] . '" value="' . intval($$data['parm']) . '" />';
+}
+
+// user color display
+if (!empty($rcs_uc))
+{
+	$sql_where = ($rcs_uc != -1) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : 'user_color = 0 AND user_level = ' . USER . ' AND ';
+}
+
+// level color display
+if (!empty($rcs_level))
+{
+	$sql_where = ($rcs_level != -1) ? 'user_level = ' . intval($rcs_level) . ' AND ' : 'user_level = ' . USER . ' AND ';
+}
+
+// group color display
+if (!empty($rcs_gc))
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = (empty($rcs_gc) ? '' : '&amp;gc=' . intval($rcs_gc)) . (empty($rcs_level) ? '' : '&amp;level=' . intval($rcs_level)) . (empty($rcs_uc) ? '' : '&amp;uc=' . intval($rcs_uc));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+modcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$style_topic_author = $rcs->get_colors($row);
+			$topic_author = ( $row['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '"' . $style_topic_author . '>' : '';
+			$topic_author .= ( $row['user_id'] != ANONYMOUS ) ? $row['username'] : ( ( $row['post_username'] != '' ) ? $row['post_username'] : $lang['Guest'] );
+			$topic_author .= ( $row['user_id'] != ANONYMOUS ) ? '</a>' : '';
+
+			$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+
+			$style_last_post_author = $rcs->get_colors($row, '', false, 'id2', 'color2', 'level2');
+			$last_post_author = ( $row['id2'] == ANONYMOUS ) ? ( ($row['post_username2'] != '' ) ? $row['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $row['id2']) . '"' . $style_last_post_author . '>' . $row['user2'] . '</a>';
+
+			$last_post_url = '<a href="' . append_sid('viewtopic.' . $phpEx . '?'  . POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+
+			$views = $row['topic_views'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$style_topic_author = $rcs->get_colors($row);
+			$topic_author = ($row['user_id'] != ANONYMOUS) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '"' . $style_topic_author . '>' : '';
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $lang['Guest']);
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? '</a>' : '';
+
+			$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+
+			$style_last_post_author = $rcs->get_colors($row, '', false, 'id2', 'color2', 'level2');
+			$last_post_author = ($row['id2'] == ANONYMOUS) ? (($row['post_username2'] != '') ? $row['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $row['id2']) . '"' . $style_last_post_author . '>' . $row['user2'] . '</a>';
+
+			$last_post_url = '<a href="' . append_sid('viewtopic.' . $phpEx . '?'  . POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+
+			$views = $row['topic_views'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+search.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+				$style_color = $rcs->get_colors($searchset[$i]);
+				$poster = ( $searchset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $searchset[$i]['user_id']) . '"' . $style_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+				$style_color = $rcs->get_colors($searchset[$i]);
+				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '"' . $style_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+				$topic_author_color = $rcs->get_colors($searchset[$i]);
+				$topic_author = ( $searchset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+				$topic_author_color = $rcs->get_colors($searchset[$i]);
+				$topic_author = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+				$last_post_author_color = $rcs->get_colors($searchset[$i], '', false, 'id2', 'color2', 'level2');
+				$last_post_author = ( $searchset[$i]['id2'] == ANONYMOUS ) ? ( ($searchset[$i]['post_username2'] != '' ) ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $searchset[$i]['id2']) . '"' . $last_post_author_color . '>' . $searchset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+				$last_post_author_color = $rcs->get_colors($searchset[$i], '', false, 'id2', 'color2', 'level2');
+				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $searchset[$i]['id2']) . '"' . $last_post_author_color . '>' . $searchset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = $rcs->get_colors($row);
+	$moderators[] = '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . "=" . $row['user_id']) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = $rcs->get_colors($row);
+	$moderators[] = '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = ( !empty($row['group_color']) && !empty($board_config['rcs_enable']) ) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+	$moderators[] = '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=" . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$topic_author_color = $rcs->get_colors($topic_rowset[$i]);
+		$topic_author = ( $topic_rowset[$i]['user_id'] != ANONYMOUS ) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$topic_author_color = $rcs->get_colors($topic_rowset[$i]);
+		$topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $topic_rowset[$i]['user_id']) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$last_post_author_color = $rcs->get_colors($topic_rowset[$i], '', false, 'id2', 'color2', 'level2');
+		$last_post_author = ( $topic_rowset[$i]['id2'] == ANONYMOUS ) ? ( ($topic_rowset[$i]['post_username2'] != '' ) ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ' ) : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '"' . $last_post_author_color . '>' . $topic_rowset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$last_post_author_color = $rcs->get_colors($topic_rowset[$i], '', false, 'id2', 'color2', 'level2');
+		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '"' . $last_post_author_color . '>' . $topic_rowset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+// here we added
+//	, group_color = $group_color
+//-- modify
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "UPDATE " . GROUPS_TABLE . "
+	SET group_type =
+	WHERE group_id = $group_id";
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+, group_moderator = $group_moderator, group_color = $group_color
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+# just remove : , group_color = $group_color
+#
+, group_moderator = $group_moderator
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', group_moderator = ' . $group_moderator, ', group_moderator = ' . $group_moderator . ', group_color = ' . $group_color, $sql);
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+// here we added
+//	, group_color
+//	, $group_color
+//-- modify
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "INSERT INTO " . GROUPS_TABLE . " (group_type
+	VALUES ($group_type
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+, group_single_user, group_color
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+# just remove : , group_color
+#
+, group_single_user
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+, '0', $group_color
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+# just remove : , $group_color
+#
+, '0'
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', group_single_user', ', group_single_user, group_color', $sql);
+			$sql = str_replace(', \'0\'', ', \'0\', ' . $group_color, $sql);
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+// here we added
+//	, user_color = $rcs_rank
+//-- modify
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "UPDATE " . USERS_TABLE . "
+	SET
+	WHERE
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+, user_color = $rcs_rank,
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+# just remove : , user_color = $rcs_rank
+#
+,
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SET ', 'SET user_color = ' . $rcs_rank . ', ', $sql);
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/index_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+<!-- BEGIN stats -->
+{stats.L_LEGEND}
+<!-- BEGIN legend -->
+{stats.legend.LEVEL_NAME}
+<!-- END legend -->
+<!-- END stats -->
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+  		<!-- BEGIN stats -->
+  		<b>{stats.L_LEGEND}&nbsp;::</b>
+  		<!-- BEGIN legend -->
+  		<a href="{stats.legend.U_LEVEL}" class="gensmall"{stats.legend.STYLE}>{stats.legend.LEVEL_NAME}</a>{stats.legend.SEP}
+  		<!-- END legend -->
+		<!-- END stats -->
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.6 to v0.0.6a - 2006/03/10 -- ##
+##########################################
+
+## -- files to edit: (1)
+	admin/admin_groups.php
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', group_single_user', ', group_single_user, group_color', $sql);
+			$sql = str_replace(', \'0\'', ', \'0\', ' . $group_color, $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('INSERT INTO ' . GROUPS_TABLE . ' (', 'INSERT INTO ' . GROUPS_TABLE . ' (group_color, ', $sql);
+			$sql = str_replace('VALUES (', 'VALUES (' . $group_color . ', ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.6a to v0.0.7 - 2006/04/08 -- ##
+##########################################
+
+## -- files to edit: (20)
+	common.php
+	groupcp.php
+	index.php
+	memberlist.php
+	modcp.php
+	privmsg.php
+	search.php
+	viewforum.php
+	viewonline.php
+	viewtopic.php
+	admin/admin_groups.php
+	admin/admin_users.php
+	admin/index.php
+	includes/constants.php
+	includes/functions.php
+	includes/page_header.php
+	includes/topic_review.php
+	includes/usercp_viewprofile.php
+	templates/subSilver/index_body.tpl
+	templates/subSilver/groupcp_info_body.tpl
+## -- files included: (8)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+	root/language/lang_english/lang_main_rcs.php
+	root/templates/colorpicker.js
+	root/templates/subSilver/admin/rcs_admin_body.tpl
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+	root/templates/subSilver/admin/rcs_list_body.tpl
+
+#
+#-----[ SQL ]-------------------------------------------------
+#
+DELETE FROM phpbb_config WHERE config_name = 'cache_time_rcs';
+
+ALTER TABLE phpbb_groups CHANGE group_color group_color mediumint(8) DEFAULT '0' NOT NULL;
+
+ALTER TABLE phpbb_rcs CHANGE rcs_id rcs_id mediumint(8) UNSIGNED NOT NULL auto_increment;
+ALTER TABLE phpbb_rcs CHANGE rcs_color rcs_color varchar(6) NOT NULL;
+ALTER TABLE phpbb_rcs CHANGE rcs_single rcs_single tinyint(1) DEFAULT '0' NOT NULL;
+ALTER TABLE phpbb_rcs CHANGE rcs_display rcs_display tinyint(1) DEFAULT '0' NOT NULL;
+ALTER TABLE phpbb_rcs CHANGE rcs_order rcs_order tinyint(4) UNSIGNED NOT NULL;
+
+ALTER TABLE phpbb_users CHANGE user_color user_color mediumint(8) DEFAULT '0' NOT NULL;
+ALTER TABLE phpbb_users ADD user_group_id mediumint(8) DEFAULT '0' NOT NULL;
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/admin/admin_rcs_settings.php to admin/admin_rcs_settings.php
+copy root/includes/class_rcs.php to includes/class_rcs.php
+copy root/templates/colorpicker.js to templates/colorpicker.js
+copy root/templates/subSilver/admin/rcs_admin_body.tpl to templates/subSilver/admin/rcs_admin_body.tpl
+copy root/templates/subSilver/admin/rcs_edit_body.tpl to templates/subSilver/admin/rcs_edit_body.tpl
+copy root/templates/subSilver/admin/rcs_list_body.tpl to templates/subSilver/admin/rcs_list_body.tpl
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------
+#
+copy root/language/lang_french/lang_main_rcs.php to language/lang_french/lang_main_rcs.php
+#
+#-----[ OPEN ]------------------------------------------------
+#
+common.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+include($phpbb_root_path . 'includes/class_rcs.' . $phpEx);
+
+// read colors
+$rcs = new rcs();
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+// include rank color system file
+include($phpbb_root_path . 'includes/class_rcs.' . $phpEx);
+
+// instantiate rank color system class
+$rcs = new rcs();
+
+// grab rank color system variables, re-cache if necessary
+$id_color = $id_group = array();
+$rcs->obtain_ids_colors($id_color);
+$rcs->obtain_ids_groups($id_group);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$template->assign_vars(array(
+	'META' =>
+);
+
+$message = $lang['Unsub_success']
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		// delete default membership, if necessary
+		if (intval($userdata['user_group_id']) == intval($group_id))
+		{
+			$rcs->update_user_group_id(intval($userdata['user_id']));
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "SELECT user_id
+	FROM
+	WHERE username
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+				$sql = str_replace('SELECT ', 'SELECT user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//
+// Get the group name
+// Email the user
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					// update user default group, if necessary
+					if (empty($row['user_group_id']))
+					{
+						$rcs->update_user_group_id(intval($row['user_id']), $group_id);
+					}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+		}
+	}
+}
+//
+// END approve or deny
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					if (isset($HTTP_POST_VARS['approve']) || isset($HTTP_POST_VARS['remove']))
+					{
+						$new_id = (isset($HTTP_POST_VARS['approve'])) ? $group_id : 0;
+						$default_id = (isset($HTTP_POST_VARS['approve'])) ? 0 : $group_id;
+
+						// update user default group, if necessary
+						$rcs->update_user_group_id($sql_in, $new_id, true, $default_id);
+					}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		// recache whosonline color groups
+		if ($board_config['rcs_enable'] && $board_config['cache_rcs'])
+		{
+			$rcs->check_colors();
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		// change users default group
+		if (isset($HTTP_POST_VARS['change_default']))
+		{
+			if (!$userdata['session_logged_in'])
+			{
+				redirect(append_sid('login.' . $phpEx . '?redirect=groupcp.' . $phpEx . '&' . POST_GROUPS_URL . '=' . $group_id, true));
+			}
+
+			if (!$is_moderator)
+			{
+				$template->assign_vars(array(
+					'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid('index.' . $phpEx) . '">',
+				));
+
+				$message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid('index.' . $phpEx) . '">', '</a>');
+
+				message_die(GENERAL_MESSAGE, $message);
+			}
+
+			$moderator_id = $HTTP_POST_VARS['moderator'];
+			$members_ids = $HTTP_POST_VARS['members'];
+
+			$sql_in = (!empty($moderator_id)) ? intval($moderator_id) : '';
+			for($i = 0; $i < count($members_ids); $i++)
+			{
+				$sql_in .= (($sql_in != '') ? ', ' : '') . intval($members_ids[$i]);
+			}
+
+			if (!empty($sql_in))
+			{
+				$rcs->update_user_group_id($sql_in, $group_id, true, $group_id);
+			}
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT user_level, user_color, user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		'GROUP_NAME' => (!empty($group_info['group_color']) && !empty($board_config['rcs_enable'])) ? '<span style="color:' . $id_color[$group_info['group_color']] . '">' . $group_info['group_name'] . '</span>' : $group_info['group_name'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		'L_CHANGE_DEFAULT' => $lang['rcs_change_default'],
+
+		'GROUP_NAME' => sprintf((empty($group_info['group_color']) ? '%s' : '<span style="color:#' . $id_color[$group_info['group_color']] . '">%s</span>'), $group_info['group_name']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		'MOD_USERNAME' => $rcs->get_colors($group_moderator, $group_moderator['username']),
+//-- fin mod : rank color system --------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		'MOD_ID' => $user_id,
+		'MOD_USERNAME' => $rcs->get_colors($group_moderator, $group_moderator['username']),
+//-- fin mod : rank color system --------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+					'USERNAME' => $username,
+MOD-*/
+//-- add
+					'USERNAME' => $rcs->get_colors($modgroup_pending_list[$i], $modgroup_pending_list[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+					'USERNAME' => $username,
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:#' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$rcs_uc =
+$rcs_hidden_fields =
+
+// prepare parms
+$lists = array(
+	'usercolor' =>
+	'levelcolor' =>
+	'groupcolor' =>
+);
+
+foreach ($lists as $list => $data)
+{
+	// get vars
+	$$data['parm'] =
+
+	// hidden fields
+	$rcs_hidden_fields .=
+}
+
+// user color display
+if (!empty($rcs_uc))
+{
+	$sql_where =
+}
+
+// level color display
+if (!empty($rcs_level))
+{
+	$sql_where =
+}
+
+// group color display
+if (!empty($rcs_gc))
+{
+	$sql_join =
+	$sql_where =
+				AND
+				AND
+				AND
+				AND
+}
+
+// display
+$display =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$parms = array(
+	'rcs_uc' => RCS_USER_URL,
+	'rcs_gc' => RCS_GROUP_URL,
+	'rcs_level' => RCS_LEVEL_URL,
+);
+
+foreach ($parms as $parm => $val)
+{
+	// get values
+	$$parm = $rcs->request_var($val, TYPE_INT);
+
+	// hidden fields
+	if (!empty($$parm))
+	{
+		$rcs_hidden_fields = '<input type="hidden" name="' . $val . '" value="' . $$parm . '" />';
+	}
+
+	// display
+	$disp[$parm] = (empty($$parm) ? '' : '&amp;' . $val . '=' . $$parm);
+}
+
+// extra selection
+$sql_join = '';
+$sql_where = (!empty($rcs_level)) ? 'user_level = ' . intval($rcs_level) . ' AND ' : ((!empty($rcs_uc)) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : '');
+
+if (!empty($rcs_gc))
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = empty($rcs_uc) ? (empty($rcs_gc) ? (empty($rcs_level) ? '' : $disp['rcs_level']) : $disp['rcs_gc']) : $disp['rcs_uc'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT user_level, user_color, user_group_id, ', $sql);
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if (!empty($sql_join))
+	{
+		$sql = str_replace('username', 'u.username', $sql);
+		$sql = str_replace('user_', 'u.user_', $sql);
+		$sql = str_replace('FROM ' . USERS_TABLE, 'FROM ' . USERS_TABLE . ' u' . $sql_join, $sql);
+		$sql = str_replace('ORDER BY', 'GROUP BY username ORDER BY', $sql);
+	}
+
+	if (!empty($sql_where))
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	if (!empty($sql_join))
+	{
+		$sql = str_replace('username', 'u.username', $sql);
+		$sql = str_replace('user_', 'u.user_', $sql);
+		$sql = str_replace('FROM ' . USERS_TABLE, 'FROM ' . USERS_TABLE . ' u' . $sql_join, $sql);
+	}
+
+	if (!empty($sql_where))
+	{
+		$sql = str_replace('WHERE ', 'WHERE ' . $sql_where, $sql);
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+// here we added
+//	" . $display . "
+//-- modify
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+// here we added
+//	$display
+//-- modify
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$pagination = generate_pagination(
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+" . $display . "
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+$display
+#
+#-----[ OPEN ]------------------------------------------------
+#
+modcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SELECT ', 'SELECT u.user_id, u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+MOD-*/
+//-- add
+		$sql = 'SELECT t.*, u.username, u.user_id, u.user_level, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			FROM ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . ' u, ' . POSTS_TABLE . ' p, ' . POSTS_TABLE . ' p2, ' . USERS_TABLE . ' u2
+			WHERE t.forum_id = ' . $forum_id . '
+				AND t.topic_poster = u.user_id
+				AND p.post_id = t.topic_first_post_id
+				AND p2.post_id = t.topic_last_post_id
+				AND u2.user_id = p2.poster_id
+			ORDER BY t.topic_type DESC, t.topic_last_post_id DESC
+			LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+MOD-*/
+//-- add
+		$sql = 'SELECT t.*, u.username, u.user_id, u.user_level, u.user_color, u.user_group_id, u2.username as user2, u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, u2.user_group_id as group_id2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			FROM ' . TOPICS_TABLE . ' t, ' . USERS_TABLE . ' u, ' . POSTS_TABLE . ' p, ' . POSTS_TABLE . ' p2, ' . USERS_TABLE . ' u2
+			WHERE t.forum_id = ' . intval($forum_id) . '
+				AND t.topic_poster = u.user_id
+				AND p.post_id = t.topic_first_post_id
+				AND p2.post_id = t.topic_last_post_id
+				AND u2.user_id = p2.poster_id
+			ORDER BY t.topic_type DESC, t.topic_last_post_id DESC
+			LIMIT ' . $start . ', ' . $board_config['topics_per_page'];
+//-- fin mod : rank color system ----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$style_topic_author =
+			$topic_author = ($row['user_id'] != ANONYMOUS)
+			$topic_author .= ($row['user_id'] != ANONYMOUS)
+			$topic_author .= ($row['user_id'] != ANONYMOUS) 
+
+			$first_post_time =
+
+			$style_last_post_author =
+			$last_post_author = ($row['id2'] == ANONYMOUS)
+
+			$last_post_url =
+
+			$views =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$topic_author_color = $rcs->get_colors($row);
+			$topic_author = ($row['user_id'] != ANONYMOUS) ? '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']) . '"' . $topic_author_color . '>' : '';
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $lang['Guest']);
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? '</a>' : '';
+
+			$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+
+			$last_post_author_color = $rcs->get_colors($row, '', false, 'group_id2', 'color2', 'level2');
+			$last_post_author = ($row['id2'] == ANONYMOUS) ? (($row['post_username2'] != '') ? $row['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $row['id2']) . '"' . $last_post_author_color . '>' . $row['user2'] . '</a>';
+
+			$last_post_url = '<a href="' . append_sid('viewtopic.' . $phpEx . '?'  . POST_POST_URL . '=' . $row['topic_last_post_id']) . '#' . $row['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+
+			$views = $row['topic_views'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+privmsg.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id AS user_id_1', ', u.user_id AS user_id_1, u.user_level AS user_level_1, u.user_color AS user_color_1', $sql);
+	$sql = str_replace(', u2.user_id AS user_id_2', ', u2.user_id AS user_id_2, u2.user_level AS user_level_2, u2.user_color AS user_color_2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id AS user_id_1', ', u.user_id AS user_id_1, u.user_level AS user_level_1, u.user_color AS user_color_1, u.user_group_id AS user_group_id_1', $sql);
+	$sql = str_replace(', u2.user_id AS user_id_2', ', u2.user_id AS user_id_2, u2.user_level AS user_level_2, u2.user_color AS user_color_2, u2.user_group_id AS user_group_id_2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+search.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+			$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$per_page = ( $show_results == 'posts' )
+
+$sql .= " ORDER BY ";
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+
+		if ($show_results == 'topics')
+		{
+			$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, u2.user_group_id as group_id2', $sql);
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+				$last_post_author_color = $rcs->get_colors($searchset[$i], '', false, 'id2', 'color2', 'level2');
+				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $searchset[$i]['id2']) . '"' . $last_post_author_color . '>' . $searchset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+				$last_post_author_color = $rcs->get_colors($searchset[$i], '', false, 'group_id2', 'color2', 'level2');
+				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $searchset[$i]['id2']) . '"' . $last_post_author_color . '>' . $searchset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', g.group_name', ', g.group_name, g.group_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT g.group_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:#' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, u2.user_group_id as group_id2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color', $sql);
+$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace(', u.user_id', ', u.user_id, u.user_level, u.user_color, u.user_group_id', $sql);
+$sql = str_replace(', u2.user_id as id2', ', u2.user_id as id2, u2.user_level as level2, u2.user_color as color2, u2.user_group_id as group_id2', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$last_post_author_color = $rcs->get_colors($topic_rowset[$i], '', false, 'id2', 'color2', 'level2');
+		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '"' . $last_post_author_color . '>' . $topic_rowset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$last_post_author_color = $rcs->get_colors($topic_rowset[$i], '', false, 'group_id2', 'color2', 'level2');
+		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . append_sid('profile.' . $phpEx . '?mode=viewprofile&amp;' . POST_USERS_URL . '='  . $topic_rowset[$i]['id2']) . '"' . $last_post_author_color . '>' . $topic_rowset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewonline.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewtopic.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+else if ( isset($HTTP_POST_VARS['group_update']
+{
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	// read users in the specified group, if set as default
+	$rcs->get_group_user_ids($group_id, true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		// recache color groups
+		if ($board_config['rcs_enable'] && $board_config['cache_rcs'])
+		{
+			$rcs->check_colors();
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		// reset users default group
+		$rcs->update_user_group_id();
+
+		// re-cache groups variables
+		$rcs->obtain_ids_groups($id_group, true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$group_color = isset($HTTP_POST_VARS['rcs_rank']) ? intval($HTTP_POST_VARS['rcs_rank']) : 0;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$group_color = $rcs->request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+if ( $delete_old_moderator )
+{
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+				// set new moderator default group
+				$rcs->update_user_group_id($group_moderator, $group_id, true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					// delete old moderator default group
+					$rcs->update_user_group_id($group_info['group_moderator'], false, true, $group_id);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace(', group_moderator = ' . $group_moderator, ', group_moderator = ' . $group_moderator . ', group_color = ' . $group_color, $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SET ', 'SET group_color = ' . $group_color . ', ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ($group_info['group_color'] != $group_color)
+			{
+				// recache color groups
+				if ($board_config['rcs_enable'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			// re-cache groups variables, if necessary
+			if ($group_info['group_color'] != $group_color)
+			{
+				$rcs->obtain_ids_groups($id_group, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			if ( !empty($group_color) )
+			{
+				// recache color groups
+				if ($board_config['enable_rcs'] && $board_config['cache_rcs'])
+				{
+					$rcs->check_colors();
+				}
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			// set moderator default group
+			$rcs->update_user_group_id($group_moderator, $new_group_id, true);
+
+			// re-cache groups variables, if necessary
+			if (!empty($group_color))
+			{
+				$rcs->obtain_ids_groups($id_group, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$rcs_rank = (!empty($HTTP_POST_VARS['rcs_rank'])) ? intval($HTTP_POST_VARS['rcs_rank']) : 0;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$user_color = $rcs->request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SET ', 'SET user_color = ' . $rcs_rank . ', ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SET ', 'SET user_color = ' . $user_color . ', ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_allow_viewonline, u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_allow_viewonline, u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/constants.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+define('RCS_TABLE', $table_prefix.'rcs');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/functions.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SELECT ', 'SELECT user_level, user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SELECT ', 'SELECT user_level, user_color, user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	include($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_main_rcs.'.$phpEx);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/page_header.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/topic_review.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace('SELECT ', 'SELECT u.user_level, u.user_color, u.user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/usercp_viewprofile.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//
+// Generate page
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$username_color = $rcs->get_colors($profiledata, $profiledata['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'USERNAME' => $profiledata['username'],
+MOD-*/
+//-- add
+	'USERNAME' => $rcs->get_colors($profiledata, $profiledata['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'USERNAME' => $profiledata['username'],
+MOD-*/
+//-- add
+	'USERNAME' => $username_color,
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $profiledata['username']),
+	'L_ABOUT_USER' => sprintf($lang['About_user'], $profiledata['username']),
+MOD-*/
+//-- add
+	'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $rcs->get_colors($profiledata, $profiledata['username'])),
+	'L_ABOUT_USER' => sprintf($lang['About_user'], $rcs->get_colors($profiledata, $profiledata['username'])),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $profiledata['username']),
+	'L_ABOUT_USER' => sprintf($lang['About_user'], $profiledata['username']),
+MOD-*/
+//-- add
+	'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $username_color),
+	'L_ABOUT_USER' => sprintf($lang['About_user'], $username_color),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'L_SEARCH_USER_POSTS' => sprintf($lang['Search_user_posts'], $profiledata['username']),
+MOD-*/
+//-- add
+	'L_SEARCH_USER_POSTS' => sprintf($lang['Search_user_posts'], $rcs->get_colors($profiledata, $profiledata['username'])),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+	'L_SEARCH_USER_POSTS' => sprintf($lang['Search_user_posts'], $profiledata['username']),
+MOD-*/
+//-- add
+	'L_SEARCH_USER_POSTS' => sprintf($lang['Search_user_posts'], $username_color),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/index_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+<td
+<!-- BEGIN stats -->
+{stats.L_LEGEND}
+<!-- BEGIN legend -->
+{stats.legend.LEVEL_NAME}
+<!-- END legend -->
+<!-- END stats -->
+</td>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+  	<td class="row1" align="left"><span class="gensmall"><b>{L_LEGEND} ::</b> {LEGEND}</span></td>
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/groupcp_info_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+<td class="row1" align="center"> &nbsp; </td>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	  <td class="row1" align="center">
+		<!-- BEGIN switch_mod_option -->
+		<input type="checkbox" name="moderator" value="{MOD_ID}" />
+		<!-- END switch_mod_option -->
+	  </td>
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+<td
+{L_REMOVE_SELECTED}
+</td>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		<td class="catBottom" colspan="8"><table width="100%" cellspacing="0">
+		  <tr>
+			<td class="cattitle" nowrap="nowrap"><input type="submit" name="change_default" value="{L_CHANGE_DEFAULT}" class="mainoption" /><td>
+			<td class="cattitle" align="right" nowrap="nowrap"><input type="submit" name="remove" value="{L_REMOVE_SELECTED}" class="mainoption" /></td>
+		  </tr>
+		</table></td>
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.7 to v0.0.7a - 2006/04/16 -- ##
+##########################################
+
+## -- files included: (1)
+	root/admin/admin_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.0.7a to v0.0.7b - 2006/04/25 -- ##
+###########################################
+
+## -- files included: (1)
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/includes/class_rcs.php to includes/class_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.0.7b to v0.0.7c - 2006/04/30 -- ##
+###########################################
+
+## -- files included: (1)
+	root/admin/admin_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.0.7c to v0.0.7d - 2006/05/01 -- ##
+###########################################
+
+## -- files included: (2)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/admin/admin_rcs_settings.php to admin/admin_rcs_settings.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.7d to v0.0.8 - 2006/05/05 -- ##
+##########################################
+
+## -- files to edit: (6)
+	common.php
+	memberlist.php
+	admin/admin_groups.php
+	admin/admin_users.php
+	includes/functions.php
+	templates/subSilver/memberlist_body.tpl
+
+## -- files included: (7)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_common.php
+	root/includes/class_rcs.php
+	root/includes/lang_extend_mac.php
+	root/language/lang_english/lang_extend_rcs.php
+	root/templates/subSilver/admin/rcs_list_body.tpl
+
+#
+#-----[ SQL ]-------------------------------------------------
+#
+
+ALTER TABLE phpbb_rcs CHANGE rcs_order rcs_order mediumint(8) UNSIGNED NOT NULL;
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs.php to admin/admin_rcs.php
+copy root/admin/admin_rcs_settings.php to admin/admin_rcs_settings.php
+copy root/includes/class_common.php to includes/class_common.php
+copy root/includes/class_rcs.php to includes/class_rcs.php
+copy root/includes/lang_extend_mac.php to includes/lang_extend_mac.php
+copy root/language/lang_english/lang_extend_rcs.php to language/lang_english/lang_extend_rcs.php
+copy root/templates/subSilver/admin/rcs_list_body.tpl to templates/subSilver/admin/rcs_list_body.tpl
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------
+#
+
+DELETE lang_main_rcs.php file in your language directories
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+common.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+include($phpbb_root_path . 'includes/db.'.$phpEx);
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# This part can already be existing : if so, just skip it
+#
+//-- mod : class common --------------------------------------------------------
+//-- add
+include($phpbb_root_path . 'includes/class_common.'.$phpEx);
+//-- fin mod : class common ----------------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$parms = array(
+	'rcs_uc' =>
+	'rcs_gc' =>
+	'rcs_level' =>
+);
+
+foreach (
+{
+	// get values
+	$$parm =
+
+	// hidden fields
+	if (
+	{
+		$rcs_hidden_fields =
+	}
+
+	// display
+	$disp[$parm] =
+}
+
+// extra selection
+$sql_join = '';
+$sql_where =
+
+if (
+{
+	$sql_join =
+	$sql_where =
+				AND
+				AND
+				AND
+				AND
+}
+
+// display
+$display =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$parms = array(
+	'rcs_uc' => RCS_USER_URL,
+	'rcs_gc' => RCS_GROUP_URL,
+	'rcs_level' => RCS_LEVEL_URL,
+);
+
+foreach ($parms as $parm => $val)
+{
+	// get values
+	$$parm = request_var($val, TYPE_INT);
+
+	// display
+	$disp[$parm] = (empty($$parm) ? '' : '&amp;' . $val . '=' . $$parm);
+}
+
+// hidden fields
+_hide_build(array(RCS_USER_URL => $rcs_uc, RCS_GROUP_URL => $rcs_gc, RCS_LEVEL_URL => $rcs_level));
+_hide_send();
+
+// extra selection
+$sql_join = '';
+$sql_where = (!empty($rcs_level)) ? 'user_level = ' . intval($rcs_level) . ' AND ' : ((!empty($rcs_uc)) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : '');
+
+if (!empty($rcs_gc))
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = empty($rcs_uc) ? (empty($rcs_gc) ? (empty($rcs_level) ? '' : $disp['rcs_level']) : $disp['rcs_gc']) : $disp['rcs_uc'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	'RCS_HIDDEN_FIELDS' => $rcs_hidden_fields,
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$group_color = $rcs->request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$group_color = request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$user_color = $rcs->request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$user_color = request_var('rcs_rank', TYPE_INT);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/functions.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+	//
+	// Set up style
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+# This part can already be existing : if so, just skip it
+#
+//-- mod : language settings -----------------------------------------------------------------------
+//-- add
+	include($phpbb_root_path . './includes/lang_extend_mac.' . $phpEx);
+//-- fin mod : language settings -------------------------------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+		}
+
+		if ( empty($template) || empty($theme) )
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+# This part can already be existing : if so, just skip it
+#
+//-- mod : language settings -----------------------------------------------------------------------
+//-- add
+			include($phpbb_root_path . './includes/lang_extend_mac.' . $phpEx);
+//-- fin mod : language settings -------------------------------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/memberlist_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{RCS_HIDDEN_FIELDS}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{RCS_HIDDEN_FIELDS}
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{S_HIDDEN_FIELDS}
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.8 to v0.0.8a - 2006/05/20 -- ##
+##########################################
+
+## -- files included: (2)
+	root/includes/class_common.php
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/includes/class_common.php to includes/class_common.php
+copy root/includes/class_rcs.php to includes/class_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.0.8a to v0.0.8b - 2006/06/05 -- ##
+###########################################
+
+## -- files included: (2)
+	root/admin/admin_rcs_settings.php
+	root/templates/subSilver/admin/rcs_admin_body.tpl
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+copy root/admin/admin_rcs_settings.php to admin/admin_rcs_settings.php
+copy root/templates/subSilver/admin/rcs_admin_body.tpl to templates/subSilver/admin/rcs_admin_body.tpl
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.0.8b to v0.0.8c - 2006/06/14 -- ##
+###########################################
+
+## -- files to edit: (2)
+	common.php
+	templates/subSilver/subSilver.cfg
+## -- files included:
+	includes/class_common.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+root/includes/class_common.php to includes/class_common.php
+#
+#-----[ OPEN ]------------------------------------------------
+#
+common.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : class common --------------------------------------------------------
+//-- add
+include($phpbb_root_path . 'includes/class_common.'.$phpEx);
+//-- fin mod : class common ----------------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : class common --------------------------------------------------------
+//-- add
+// common objects
+include($phpbb_root_path . 'includes/class_common.'.$phpEx);
+
+// convert pic buttons to standard input
+_cvt_pic_butts();
+//-- fin mod : class common ----------------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/subSilver.cfg
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$images['topic_mod_delete']
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$images['rcs_pick_color'] = $current_template_images . '/rcs_pick_color.gif';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+// command
+$images['cmd_up_arrow'] = "$current_template_images/bs_arrow_up.gif";
+$images['cmd_down_arrow'] = "$current_template_images/bs_arrow_down.gif";
+$images['cmd_cancel'] = "$current_template_images/{LANG}/bs_command_cancel.gif";
+$images['cmd_create'] = "$current_template_images/{LANG}/bs_command_create.gif";
+$images['cmd_delete'] = "$current_template_images/{LANG}/bs_command_delete.gif";
+$images['cmd_edit'] = "$current_template_images/{LANG}/bs_command_edit.gif";
+$images['cmd_regen'] = "$current_template_images/{LANG}/bs_command_regen.gif";
+$images['cmd_submit'] = "$current_template_images/{LANG}/bs_command_submit.gif";
+// color picker
+$images['rcs_pick_color'] = "$current_template_images/rcs_pick_color.gif";
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : control panels ------------------------------------------------------
+$images['cmd_up_arrow'] = $current_template_images . '/bs_arrow_up.gif';
+$images['cmd_down_arrow'] = $current_template_images . '/bs_arrow_down.gif';
+$images['cmd_details'] = $current_template_images . '/bs_details.gif';
+
+$images['cmd_add'] = $current_template_images . '/{LANG}/bs_command_add.gif';
+$images['cmd_cancel'] = $current_template_images . '/{LANG}/bs_command_cancel.gif';
+$images['cmd_check'] = $current_template_images . '/{LANG}/bs_command_check.gif';
+$images['cmd_create'] = $current_template_images . '/{LANG}/bs_command_create.gif';
+$images['cmd_delete'] = $current_template_images . '/{LANG}/bs_command_delete.gif';
+$images['cmd_edit'] = $current_template_images . '/{LANG}/bs_command_edit.gif';
+$images['cmd_export'] = $current_template_images . '/{LANG}/bs_command_export.gif';
+$images['cmd_preview'] = $current_template_images . '/{LANG}/bs_command_preview.gif';
+$images['cmd_search'] = $current_template_images . '/{LANG}/bs_command_search.gif';
+$images['cmd_select'] = $current_template_images . '/{LANG}/bs_command_select.gif';
+$images['cmd_synchro'] = $current_template_images . '/{LANG}/bs_command_synchro.gif';
+$images['cmd_regen'] = $current_template_images . '/{LANG}/bs_command_regen.gif';
+$images['cmd_submit'] = $current_template_images . '/{LANG}/bs_command_submit.gif';
+//-- fin mod : control panels --------------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.8c to v0.0.9 - 2006/07/07 -- ##
+##########################################
+
+## -- files to edit: (16)
+	groupcp.php
+	index.php
+	memberlist.php
+	privmsg.php
+	viewforum.php
+	viewonline.php
+	admin/admin_groups.php
+	admin/admin_users.php
+	admin/index.php
+	templates/subSilver/groupcp_info_body.tpl
+	templates/subSilver/memberlist_body.tpl
+	templates/subSilver/privmsg_body.tpl
+	templates/subSilver/viewonline_body.tpl
+	templates/subSilver/admin/group_edit_body.tpl
+	templates/subSilver/admin/index_body.tpl
+	templates/subSilver/admin/user_edit_body.tpl
+## -- files included: (6)
+	root/admin/admin_rcs.php
+	root/includes/class_rcs.php
+	root/language/lang_english/lang_extend_rcs.php
+	root/templates/subSilver/list_box.tpl
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+	root/templates/subSilver/admin/rcs_list_body.tpl
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		'L_CHANGE_DEFAULT' => $lang['rcs_change_default'],
+
+		'GROUP_NAME' => sprintf((empty($group_info['group_color']) ? '%s' : '<span style="color:#' . $id_color[$group_info['group_color']] . '">%s</span>'), $group_info['group_name']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		'L_CHANGE_DEFAULT' => $lang['rcs_change_default'],
+
+		'GROUP_NAME' => $rcs->get_group_class($group_info['group_color'], $group_info['group_name']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		'MOD_USERNAME' => $username,
+MOD-*/
+//-- add
+		'MOD_ID' => $user_id,
+		'MOD_USERNAME' => $rcs->get_colors($group_moderator, $group_moderator['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'MOD_ID' => $user_id,
+		'MOD_STYLE' => $rcs->get_colors($group_moderator),
+//-- fin mod : rank color system -----------------------------------------------
+		'MOD_USERNAME' => $username,
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				'USERNAME' => $username,
+MOD-*/
+//-- add
+				'USERNAME' => $rcs->get_colors($group_members[$i], $group_members[$i]['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+				'STYLE' => $rcs->get_colors($group_members[$i]),
+//-- fin mod : rank color system -----------------------------------------------
+				'USERNAME' => $username,
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:#' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$style_color = $rcs->get_group_class($row['group_color']);
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'USERNAME' => $username,
+MOD-*/
+//-- add
+			'USERNAME' => $rcs->get_colors($row, $row['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			'STYLE' => $rcs->get_colors($row),
+//-- fin mod : rank color system -----------------------------------------------
+			'USERNAME' => $username,
+#
+#-----[ OPEN ]------------------------------------------------
+#
+privmsg.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'FROM' => $msg_username,
+MOD-*/
+			'FROM' => $rcs->get_colors($row, $row['username']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			'STYLE' => $rcs->get_colors($row),
+//-- fin mod : rank color system -----------------------------------------------
+			'FROM' => $msg_username,
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = (!empty($row['group_color']) && !empty($board_config['rcs_enable'])) ? ' style="color:#' . $id_color[$row['group_color']] . '; font-weight: bold;"' : '';
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = $rcs->get_style($row['group_color']);
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewonline.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+			$username = $rcs->get_colors($row, $row['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'USERNAME' =>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			'STYLE' => $rcs->get_colors($row),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$rcs_select_box = $rcs->select_colors($group_info['group_color']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$rcs->select_colors($group_info['group_color']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'L_RCS_SELECT_RANK' => $lang['rcs_select_rank'],
+		'RCS_SELECT_BOX' => $rcs_select_box,
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'L_RCS_SELECT_RANK' => $lang['rcs_select_rank'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$rcs_select_box = $rcs->select_colors($this_userdata['user_color'], $single=true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		$rcs->select_colors($this_userdata['user_color'], $single=true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			'RCS_SELECT_BOX' => $rcs_select_box,
+			'L_RCS_SELECT_RANK' => $lang['rcs_select_rank'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			'L_RCS_SELECT_RANK' => $lang['rcs_select_rank'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				$username = $onlinerow_reg[$i]['username'];
+MOD-*/
+//-- add
+				$style = $rcs->get_colors($onlinerow_reg[$i]);
+				$username = sprintf(($onlinerow_reg[$i]['user_allow_viewonline'] ? (empty($style) ? '%s' : '<span' . $style . '>%s</span>') : '<i' . $style . '>%s</i>'), $onlinerow_reg[$i]['username']);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$username = $onlinerow_reg[$i]['username'];
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+"USERNAME" =>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					"STYLE" => $rcs->get_colors($onlinerow_reg[$i]),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/groupcp_info_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{U_MOD_VIEWPROFILE}" class="gen">{MOD_USERNAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{U_MOD_VIEWPROFILE}" class="gen"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{U_MOD_VIEWPROFILE}"{MOD_STYLE}
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{member_row.U_VIEWPROFILE}" class="gen">{member_row.USERNAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{member_row.U_VIEWPROFILE}" class="gen"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{member_row.U_VIEWPROFILE}"{member_row.STYLE}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/memberlist_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{memberrow.U_VIEWPROFILE}" class="gen">{memberrow.USERNAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{memberrow.U_VIEWPROFILE}" class="gen"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{memberrow.U_VIEWPROFILE}"{memberrow.STYLE}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/privmsg_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{listrow.U_FROM_USER_PROFILE}" class="name">{listrow.FROM}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{listrow.U_FROM_USER_PROFILE}" class="name"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{listrow.U_FROM_USER_PROFILE}"{listrow.STYLE}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/viewonline_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{reg_user_row.U_USER_PROFILE}" class="gen">{reg_user_row.USERNAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{reg_user_row.U_USER_PROFILE}" class="gen"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{reg_user_row.U_USER_PROFILE}"{reg_user_row.STYLE}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/admin/group_edit_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{RCS_SELECT_BOX}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{RCS_SELECT_BOX}
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{LIST_BOX}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/admin/index_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{reg_user_row.U_USER_PROFILE}" class="gen">{reg_user_row.USERNAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{reg_user_row.U_USER_PROFILE}" class="gen"
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{reg_user_row.U_USER_PROFILE}"{reg_user_row.STYLE}
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/admin/user_edit_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{RCS_SELECT_BOX}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{RCS_SELECT_BOX}
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{LIST_BOX}
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.9 to v0.0.9a - 2006/07/15 -- ##
+##########################################
+
+## -- files to edit: (1)
+	viewforum.php
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = $rcs->get_style($row['group_color']);
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = $rcs->get_group_class($row['group_color']);
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.0.9a to v0.1.0 - 2006/08/15 -- ##
+##########################################
+
+## -- files to edit: (5)
+	common.php
+	groupcp.php
+	index.php
+	viewforum.php
+	admin/admin_groups.php
+## -- files included: (3)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+common.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+// include rank color system file
+include($phpbb_root_path . 'includes/class_rcs.' . $phpEx);
+
+// instantiate rank color system class
+$rcs = new rcs();
+
+// grab rank color system variables, re-cache if necessary
+$id_color = $id_group = array();
+$rcs->obtain_ids_colors($id_color);
+$rcs->obtain_ids_groups($id_group);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+// include rank color system file
+include($phpbb_root_path . 'includes/class_rcs.' . $phpEx);
+
+// instantiate rank color system class
+$rcs = new rcs();
+
+// grab rank color system variables, re-cache if necessary
+$id_color = array();
+$rcs->obtain_ids_colors($id_color);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		'L_CHANGE_DEFAULT' => $lang['rcs_change_default'],
+
+		'GROUP_NAME' => $rcs->get_group_class($group_info['group_color'], $group_info['group_name']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		'L_CHANGE_DEFAULT' => $lang['rcs_change_default'],
+
+		'GROUP_NAME' => $rcs->get_group_class($group_id, $group_info['group_name']),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$sql = str_replace(', g.group_id', ', g.group_id, g.group_color', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# just remove the line(s)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+		$style_color = $rcs->get_group_class($row['group_color']);
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+		$style_color = $rcs->get_group_class($row['group_id']);
+		$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$sql = str_replace('SELECT ', 'SELECT g.group_color, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# just remove the line(s)
+#
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- add
+	$style_color = $rcs->get_group_class($row['group_color']);
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- add
+	$style_color = $rcs->get_group_class($row['group_id']);
+	$moderators[] = '<a href="' . append_sid('groupcp.' . $phpEx . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+		// re-cache groups variables
+		$rcs->obtain_ids_groups($id_group, true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		// re-cache groups variables
+		$rcs->obtain_ids_colors($id_color, true);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			// re-cache groups variables, if necessary
+			if ($group_info['group_color'] != $group_color)
+			{
+				$rcs->obtain_ids_groups($id_group, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			// re-cache groups variables, if necessary
+			if ($group_info['group_color'] != $group_color)
+			{
+				$rcs->obtain_ids_colors($id_color, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+			// re-cache groups variables, if necessary
+			if (!empty($group_color))
+			{
+				$rcs->obtain_ids_groups($id_group, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+			// re-cache groups variables, if necessary
+			if (!empty($group_color))
+			{
+				$rcs->obtain_ids_colors($id_color, true);
+			}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.1.0 to v0.1.0a - 2006/08/20 -- ##
+##########################################
+
+## -- files included: (1)
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/includes/class_rcs.php TO includes/class_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+###########################################
+## -- v0.1.0a to v0.1.0b - 2006/08/24 -- ##
+###########################################
+
+## -- files included: (1)
+	root/admin/admin_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/admin/admin_rcs.php TO admin/admin_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+##########################################
+## -- v0.1.0b to v0.1.1 - 2006/09/23 -- ##
+##########################################
+
+## -- files to edit: (5)
+	groupcp.php
+	admin/admin_forumauth.php
+	admin/admin_groups.php
+	admin/admin_ug_auth.php
+	admin/admin_users.php
+## -- files included: (14)
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+	root/language/lang_english/lang_extend_rcs.php
+	root/templates/subSilver/groupcp_select_body.tpl
+	root/templates/subSilver/list_box.tpl
+	root/templates/subSilver/images/lang_english/bs_command_search.gif
+	root/templates/subSilver/images/lang_english/bs_command_select.gif
+	root/templates/subSilver/admin/auth_select_body.tpl
+	root/templates/subSilver/admin/group_select_body.tpl
+	root/templates/subSilver/admin/rcs_admin_body.tpl
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+	root/templates/subSilver/admin/rcs_list_body.tpl
+	root/templates/subSilver/admin/user_select_body.tpl
+
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------
+#
+Once the renames done, I strongly advice you to backup them,
+then to remove them from your webspace.
+
+RENAME templates/subSilver/groupcp_user_body.tpl INTO templates/subSilver/_sav_groupcp_user_body.tpl
+RENAME templates/subSilver/admin/auth_select_body.tpl INTO templates/subSilver/admin/_sav_auth_select_body.tpl
+RENAME templates/subSilver/admin/group_select_body.tpl INTO templates/subSilver/admin/_sav_group_select_body.tpl
+RENAME templates/subSilver/admin/user_select_body.tpl INTO templates/subSilver/admin/_sav_user_select_body.tpl
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+	$template->pparse('info');
+}
+else
+{
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+		$template->pparse('user');
+	}
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+MOD-*/
+//-- add
+	/**
+	* main process
+	*
+	* main usergroups page, built by two distinct processes
+	* (registered user or guest), where the user can select a group.
+	*/
+	$items = array();
+
+	if ( $userdata['session_logged_in'] )
+	{
+		// init vars
+		$in_group = array();
+		$g_pending = array();
+		$g_member = array();
+		$g_other = array();
+
+		// select groups to which the user belongs or has a pending membership
+		$sql = 'SELECT g.group_id, g.group_name, g.group_type, ug.group_id as ug_id, ug.user_pending
+			FROM ' . GROUPS_TABLE . ' g
+				LEFT JOIN ' . USER_GROUP_TABLE . ' ug
+					ON ug.user_id = ' . intval($userdata['user_id']) . '
+						AND ug.group_id = g.group_id
+			WHERE g.group_single_user = 0
+			ORDER BY g.group_name, ug.user_id';
+		if ( !($result = $db->sql_query($sql)) )
+		{
+			message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$group_color = $rcs->get_group_class($row['group_id']);
+			if ( $row['ug_id'] == $row['group_id'] )
+			{
+				$in_group[] = intval($row['group_id']);
+				if ( $row['user_pending'] )
+				{
+					$g_pending[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color, 'optgroup' => $lang['Memberships_pending']);
+				}
+				else
+				{
+					$g_member[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color, 'optgroup' => $lang['Current_memberships']);
+				}
+			}
+
+			if ( !in_array($row['group_id'], $in_group) && ( $row['group_type'] != GROUP_HIDDEN || $userdata['user_level'] == ADMIN ) )
+			{
+				$g_other[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color, 'optgroup' => $lang['Non_member_groups']);
+			}
+		
+		}
+		$db->sql_freeresult($result);
+
+		$items = array_merge($g_pending, $g_member, $g_other);
+	}
+	else
+	{
+		// init vars
+		$items = array();
+
+		// select all groups (guest process)
+		$sql = 'SELECT group_id, group_name, group_type
+			FROM ' . GROUPS_TABLE . '
+			WHERE group_single_user = 0
+			ORDER BY group_name';
+		if ( !($result = $db->sql_query($sql)) )
+		{
+			message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
+		}
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if ( $row['group_type'] != GROUP_HIDDEN || $userdata['user_level'] == ADMIN )
+			{
+				$group_color = $rcs->get_group_class($row['group_id']);
+				$items[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color, 'optgroup' => $lang['Non_member_groups']);
+			}
+		}
+		$db->sql_freeresult($result);
+	}
+
+	// let's go
+	if ( !empty($items) )
+	{
+		// header
+		$page_title = $lang['Group_Control_Panel'];
+		include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+
+		// jumpbox
+		make_jumpbox('viewforum.' . $phpEx);
+
+		// hidden fields
+		_hide_build(array('sid' => $userdata['session_id']));
+		_hide_send();
+
+		// build groups list
+		$groups_list = array('name' => POST_GROUPS_URL, 'items' => $items);
+		$rcs->constructor($groups_list);
+
+		// display
+		$template->set_filenames(array('user' => 'groupcp_select_body.tpl'));
+
+		// constants
+		$template->assign_vars(array(
+			'L_USERGROUPS' => $lang['usergroups_list'],
+			'L_SELECT_USERGROUP' => $lang['select_usergroup'],
+			'L_SELECT_USERGROUP_DETAILS' => $lang['select_usergroup_details'],
+			'L_VIEW_INFORMATION' => $lang['View_Information'],
+
+			'I_SUBMIT' => $images['cmd_submit'],
+
+			'S_USERGROUP_ACTION' => append_sid('groupcp.' . $phpEx),
+		));
+
+		// send the display
+		$template->pparse('user');
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_forumauth.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'L_LOOK_UP' =>
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'I_SELECT' => $phpbb_root_path . $images['cmd_select'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "SELECT group_id, group_name
+	FROM " . GROUPS_TABLE . "
+	WHERE
+	ORDER
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+	$template->assign_block_vars('select_box', array());
+}
+
+$template->pparse('body');
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+MOD-*/
+//-- add
+	// select all groups
+	$sql = 'SELECT group_id, group_name
+		FROM ' . GROUPS_TABLE . '
+			WHERE group_single_user = 0
+		ORDER BY group_name';
+	if ( !($result = $db->sql_query($sql)) )
+	{
+		message_die(GENERAL_ERROR, 'Could not obtain groups list', '', __LINE__, __FILE__, $sql);
+	}
+
+	$items = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$group_color = $rcs->get_group_class($row['group_id']);
+		$items[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color);
+	}
+	$db->sql_freeresult($result);
+
+	if ( !empty($items) )
+	{
+		// build groups list
+		$select_list = array('name' => POST_GROUPS_URL, 'items' => $items);
+		$rcs->constructor($select_list, 'S_GROUP_SELECT');
+
+		// select box
+		$template->assign_block_vars('select_box', array());
+	}
+
+	// display
+	$template->set_filenames(array('body' => 'admin/group_select_body.tpl'));
+
+	// constants
+	$template->assign_vars(array(
+		'L_GROUP_TITLE' => $lang['Group_administration'],
+		'L_GROUP_EXPLAIN' => $lang['Group_admin_explain'],
+		'L_GROUP_SELECT' => $lang['Select_group'],
+		'L_LOOK_UP' => $lang['Look_up_group'],
+		'L_CREATE_NEW_GROUP' => $lang['New_group'],
+
+		'I_EDIT' => $phpbb_root_path . $images['cmd_edit'],
+		'I_CREATE' => $phpbb_root_path . $images['cmd_create'],
+
+		'S_GROUP_ACTION' => append_sid('admin_groups.' . $phpEx),
+	));
+
+	// send the display
+	$template->pparse('body');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_ug_auth.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "SELECT
+$sql .= ( $mode == 'user' ) ?
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+MOD-*/
+//-- add
+	$sql = 'SELECT u.user_id, u.username, u.user_level, u.user_color, u.user_group_id, g.group_id, g.group_name, g.group_single_user, ug.user_pending
+			FROM ' . USERS_TABLE . ' u, ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+				WHERE ' . ( ($mode == 'user') ? 'u.user_id = ' . intval($user_id) . '
+					AND ug.user_id = u.user_id
+					AND g.group_id = ug.group_id' : 'g.group_id = ' . intval($group_id) . '
+					AND ug.group_id = g.group_id
+					AND u.user_id = ug.user_id') . '
+			ORDER BY ' . ( ($mode == 'user') ? 'g.group_name' : 'u.username' );
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$name[] = ( $mode == 'user' ) ?
+$id[] = ( $mode == 'user' ) ?
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$ug_color[] = ($mode == 'user') ? $rcs->get_group_class(intval($ug_info[$i]['group_id'])) : $rcs->get_colors($ug_info[$i]);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+		for($i = 0; $i < count($ug_info); $i++)
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		for($i = 0; $i < count($ug_info); $i++)
+MOD-*/
+//-- add
+		for ($i = 0; $i < count($name); $i++)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$t_usergroup_list .=
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				$t_usergroup_list .= ( ( $t_usergroup_list != '' ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
+MOD-*/
+//-- add
+				$t_usergroup_list .= ( ($t_usergroup_list != '') ? ', ' : '' ) . '<a href="' . append_sid('admin_ug_auth.' . $phpEx . '?mode=' . $ug . '=' . intval($id[$i])) . '"' . $ug_color[$i] . '>' . $name[$i] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$t_pending_list .=
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+				$t_pending_list .= ( ( $t_pending_list != '' ) ? ', ' : '' ) . '<a href="' . append_sid("admin_ug_auth.$phpEx?mode=$ug=" . $id[$i]) . '">' . $name[$i] . '</a>';
+MOD-*/
+//-- add
+				$t_pending_list .= ( ($t_pending_list != '') ? ', ' : '' ) . '<a href="' . append_sid('admin_ug_auth.' . $phpEx . '?mode=' . $ug . '=' . intval($id[$i])) . '"' . $ug_color[$i] . '>' . $name[$i] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'USERNAME' => $t_username,
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'USERNAME' => $t_username,
+MOD-*/
+//-- add
+			'USERNAME' => $rcs->get_colors($ug_info[0], $t_username),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'USERNAME' => $t_groupname,
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+			'USERNAME' => $t_groupname,
+MOD-*/
+//-- add
+			'USERNAME' => $rcs->get_group_class(intval($group_id), $t_groupname),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = "SELECT group_id
+	FROM " . GROUPS_TABLE . "
+	WHERE
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+	'S_AUTH_SELECT' => $select_list)
+);
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+MOD-*/
+//-- add
+		// select all groups
+		$sql = 'SELECT group_id, group_name
+			FROM ' . GROUPS_TABLE . '
+				WHERE group_single_user = 0
+			ORDER BY group_name';
+		if ( !($result = $db->sql_query($sql)) )
+		{
+			message_die(GENERAL_ERROR, 'Could not obtain groups list', '', __LINE__, __FILE__, $sql);
+		}
+
+		$items = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$group_color = $rcs->get_group_class($row['group_id']);
+			$items[] = array('name' => $row['group_name'], 'value' => intval($row['group_id']), 'style' => $group_color);
+		}
+		$db->sql_freeresult($result);
+
+		if ( empty($items) )
+		{
+			$items[] = array('name' => $lang['None'], 'value' => 0);
+		}
+
+		// build groups list
+		$select_list = array('name' => POST_GROUPS_URL, 'items' => $items);
+		$rcs->constructor($select_list, 'S_AUTH_SELECT');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'L_LOOK_UP' =>
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'I_SELECT' => $phpbb_root_path . $images['cmd_select'],
+		'I_SEARCH' => $phpbb_root_path . $images['cmd_search'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_users.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'L_FIND_USERNAME' =>
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		'I_SELECT' => $phpbb_root_path . $images['cmd_select'],
+		'I_SEARCH' => $phpbb_root_path . $images['cmd_search'],
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
+
+#########################################
+## -- v0.1.1 to v0.1.2 - 2006/10/29 -- ##
+#########################################
+
+## -- files to edit: (4)
+	memberlist.php
+	templates/subSilver/subSilver.cfg
+	templates/subSilver/index_body.tpl
+	templates/subSilver/admin/page_header.tpl
+## -- files included:
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+	root/language/lang_english/lang_extend_rcs.php
+	root/templates/picker/*.*
+	root/templates/subSilver/admin/rcs_admin_body.tpl
+	root/templates/subSilver/admin/rcs_edit_body.tpl
+
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------
+#
+DELETE templates/colorpicker.js
+DELETE templates/subSilver/images/rcs_pick_color.gif
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$parms = array(
+	'rcs_uc' =>
+	'rcs_gc' =>
+	'rcs_level' =>
+);
+
+foreach (
+{
+	// get values
+	$$parm =
+
+	// display
+	$disp[$parm] =
+}
+
+// hidden fields
+_hide_build(
+_hide_send();
+
+// extra selection
+$sql_join = '';
+$sql_where =
+
+if (!empty($rcs_gc))
+{
+	$sql_join =
+	$sql_where =
+				AND
+				AND
+				AND
+				AND
+}
+
+// display
+$display =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$parms = array(
+	'rcs_uc' => RCS_USER_URL,
+	'rcs_gc' => RCS_GROUP_URL,
+	'rcs_level' => RCS_LEVEL_URL,
+);
+
+foreach ( $parms as $parm => $val )
+{
+	// get values
+	$$parm = request_var($val, TYPE_INT);
+
+	// display
+	$disp[$parm] = empty($$parm) ? '' : '&amp;' . $val . '=' . $$parm;
+}
+
+// hidden fields
+_hide_build(array(
+	RCS_USER_URL => $rcs_uc,
+	RCS_GROUP_URL => $rcs_gc,
+	RCS_LEVEL_URL => $rcs_level
+));
+_hide_send();
+
+// extra selection
+$sql_join = '';
+$sql_where = !empty($rcs_level) ? 'user_level = ' . intval($rcs_level) . ' AND ' : ( !empty($rcs_uc) ? 'user_color = ' . intval($rcs_uc) . ' AND ' : '' );
+
+if ( !empty($rcs_gc) )
+{
+	$sql_join = ', ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug';
+	$sql_where = 'g.group_color = ' . intval($rcs_gc) . '
+				AND g.group_id = ug.group_id
+				AND ug.user_pending = 0
+				AND u.user_id = ug.user_id
+				AND ';
+}
+
+// display
+$display = empty($rcs_uc) ? ( empty($rcs_gc) ? ( empty($rcs_level) ? '' : $disp['rcs_level'] ) : $disp['rcs_gc'] ) : $disp['rcs_uc'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/subSilver.cfg
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$images['rcs_pick_color'] = $current_template_images . '/rcs_pick_color.gif';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/index_body.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{L_LEGEND}
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+  	<td class="row1"><span class="gensmall">
+  		<strong>{L_LEGEND}:</strong>
+  		<!-- BEGIN legend -->
+  		[&nbsp;<a href="{legend.U_RANK}"{legend.RANK_STYLE}>{legend.RANK_NAME}</a>&nbsp;]
+  		<!-- END legend -->
+  	</span></td>
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/admin/page_header.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+</head>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+<link rel="stylesheet" type="text/css" href="./../templates/picker/picker.css" media="screen" />
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

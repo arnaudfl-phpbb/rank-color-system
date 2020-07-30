@@ -1,0 +1,159 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.4 ("The Merry Christmas" edition)
+
+##########################################
+## -- v0.1.3b to v0.1.4 - 2006/12/23 -- ##
+##########################################
+
+## -- files to edit: (4)
+	memberlist.php
+	profile.php
+	admin/index.php
+	includes/page_header.php
+## -- files included:
+	root/userlist.php
+	root/admin/admin_versions.php
+	root/includes/class_common.php
+	root/includes/class_rcs.php
+	root/includes/template.php
+	root/language/lang_english/lang_extend_rcs.php
+	root/templates/subSilver/admin/versions_body.tpl
+	root/templates/subSilver/images/lang_english/bs_command_check.gif
+	root/templates/subSilver/list_box.tpl
+	root/templates/subSilver/navigation_box.tpl
+	root/templates/subSilver/userlist_body.tpl
+	root/templates/subSilver/userlist_group.tpl
+	root/templates/subSilver/userlist_leaders.tpl
+	root/templates/subSilver/userlist_view.tpl
+
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------
+#
+Once the renames done, I strongly advice you to backup them,
+then to remove them from your webspace.
+
+IMPORTANT: don't rename and replace the template.php file, if you use eXtreme Styles mod 2.x.
+
+RENAME includes/template.php INTO includes/_sav_template.php
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+// End session management
+//
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( defined('RCS_USERLIST') )
+{
+	redirect($get->url('userlist', '', true));
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+profile.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+include($phpbb_root_path . 'includes/usercp_viewprofile.'.$phpEx);
+exit;
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		include($phpbb_root_path . 'includes/usercp_viewprofile.'.$phpEx);
+		exit;
+MOD-*/
+//-- add
+		if ( defined('RCS_USERLIST') )
+		{
+			$userid = request_var(POST_USERS_URL, TYPE_INT);
+			if ( !empty($userid) )
+			{
+				redirect($get->url('userlist', array('mode' => 'viewprofile', POST_USERS_URL => intval($userid)), true));
+			}
+		}
+		else
+		{
+			include($get->url('includes/usercp_viewprofile'));
+			exit;
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+// Check for new version
+$current_version =
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$template->assign_vars(array(
+	'VERSION_INFO'	=>
+	'L_VERSION_INFORMATION'	=>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+MOD-*/
+//-- add
+	$version_info = sprintf($lang['click_check_versions'], '<a href="' . $get->url('admin/admin_versions', '', true) . '">', '</a>');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/page_header.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$nav_links_html = '';
+$nav_link_proto =
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+$nav_links = empty($nav_links) ? array() : array_merge($nav_links, array(
+	'author' => array(
+		'url' => $get->url('userlist', '', true),
+		'title' => $lang['Memberlist'],
+	),
+));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

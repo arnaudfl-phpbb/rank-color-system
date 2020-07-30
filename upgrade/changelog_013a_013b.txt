@@ -1,0 +1,19 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.3b
+
+###########################################
+## -- v0.1.3a to v0.1.3b - 2006/12/08 -- ##
+###########################################
+
+## -- files included: (1)
+	root/userlist.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/userlist.php TO userlist.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

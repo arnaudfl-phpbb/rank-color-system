@@ -1,0 +1,115 @@
+##############################################################
+## MOD Title:		Rank Color System with Birthday Event 
+## MOD Author: reddog < N/A > (N/A) http://www.reddevboard.com/ 
+## MOD Description:	Addon to use Rank Color System with
+##			Birthday Event
+## MOD Version:		0.0.3
+##
+## Installation Level:	Easy
+## Installation Time:	2 Minutes
+## Files To Edit:	2
+##	includes/class_bdays.php
+##	templates/subSilver/index_bdays_box.tpl
+## Included Files:	(N/A)
+##
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/ 
+##############################################################
+## Author Notes:
+##
+## This addon requires Birthday Event 1.0.3e MOD by reddog
+##
+##############################################################
+## MOD History:
+##
+## 2006-07-06 - Version 0.0.3
+##	- compatible with rank color system 0.0.9
+## 2006-04-01 - Version 0.0.2
+##	- compatable with rank color system 0.0.7
+## 2005-11-06 - Version 0.0.1
+##	- compatible with birthday event 1.0.3
+##
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/class_bdays.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+function display_bdays(
+{
+	global $db
+	global $phpEx
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+		global $rcs;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$sql = 'SELECT
+	FROM
+	WHERE user_birthday LIKE
+	ORDER BY
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$sql = str_replace('SELECT ', 'SELECT user_level, user_color, user_group_id, ', $sql);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'BDAY_NAME' =>
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+					'BDAY_STYLE' => $rcs->get_colors($row),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/subSilver/index_bdays_box.tpl
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+{birthday.list.L_BDAY_HAPPY}" class="gensmall">{birthday.list.BDAY_NAME}
+#
+#-----[ IN-LINE FIND ]----------------------------------------
+#
+{birthday.list.L_BDAY_HAPPY}" class="gensmall">
+#
+#-----[ IN-LINE REPLACE WITH ]--------------------------------
+#
+{birthday.list.L_BDAY_HAPPY}"{birthday.list.BDAY_STYLE}>
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

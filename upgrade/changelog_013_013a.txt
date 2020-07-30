@@ -1,0 +1,180 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.3a
+
+##########################################
+## -- v0.1.3 to v0.1.3a - 2006/12/07 -- ##
+##########################################
+
+## -- files to edit: (2)
+	groupcp.php
+	includes/functions.php
+## -- files included: (1)
+	root/userlist.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/userlist.php TO userlist.php
+#
+#-----[ OPEN ]------------------------------------------------
+#
+groupcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+MOD-*/
+//-- add
+	/**
+	* main process
+	*
+	* main usergroups page where the user can select a group.
+	*/
+
+	// grab usergroups data
+	include(
+	$set =
+	$items =
+	unset($set);
+
+	// let's go
+	if ( !empty($items) )
+	{
+		// header
+		$page_title =
+		include(
+
+		// jumpbox
+		make_jumpbox(
+
+		// hidden fields
+		_hide_build(
+		_hide_send();
+
+		// build groups list
+		$groups_list =
+		$rcs->constructor(
+		unset($items);
+
+		// display
+		$template->set_filenames(
+
+		// constants
+		$template->assign_vars(array(
+			'L_USERGROUPS' =>
+			'L_SELECT_USERGROUP' =>
+			'L_SELECT_USERGROUP_DETAILS' =>
+			'L_VIEW_INFORMATION' =>
+
+			'I_SUBMIT' =>
+
+			'S_USERGROUP_ACTION' =>
+		));
+
+		// send the display
+		$template->pparse(
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+MOD-*/
+//-- add
+	/**
+	* main process
+	*
+	* main usergroups page where the user can select a group.
+	*/
+
+	// grab usergroups data
+	include($get->url('includes/class_rcs_set'));
+	$set = new rcs_set();
+	$items = $set->get_usergroups_list();
+	unset($set);
+
+	// let's go
+	if ( !empty($items) )
+	{
+		// header
+		$page_title = $lang['Group_Control_Panel'];
+		include($get->url('includes/page_header'));
+
+		// hidden fields
+		_hide_build(array('sid' => $userdata['session_id']));
+		_hide_send();
+
+		// build groups list
+		$groups_list = array('name' => POST_GROUPS_URL, 'items' => $items);
+		$rcs->constructor($groups_list);
+		unset($items);
+
+		// display
+		$template->set_filenames(array('user' => 'groupcp_select_body.tpl'));
+
+		// constants
+		$template->assign_vars(array(
+			'L_USERGROUPS' => $lang['usergroups_list'],
+			'L_SELECT_USERGROUP' => $lang['select_usergroup'],
+			'L_SELECT_USERGROUP_DETAILS' => $lang['select_usergroup_details'],
+			'L_VIEW_INFORMATION' => $lang['View_Information'],
+
+			'I_SUBMIT' => $images['cmd_submit'],
+
+			'S_USERGROUP_ACTION' => $get->url('groupcp', '', true),
+		));
+
+		// navigation
+		$navigation = new navigation();
+		$navigation->add('usergroups_list', 'select_usergroup', 'groupcp');
+		$navigation->display();
+		unset($navigation);
+
+		// send the display
+		$template->pparse('user');
+	}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/functions.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+function message_die(
+{
+	global
+	global
+	global $starttime;
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	global $get;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+if (strstr(urldecode($url)
+{
+	message_die(GENERAL_ERROR
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	// Make sure no &amp;'s are in, this will break the redirect
+	$url = str_replace('&amp;', '&', $url);
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

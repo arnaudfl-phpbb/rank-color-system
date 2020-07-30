@@ -1,0 +1,57 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.5a ("The Merry Christmas" edition)
+
+##########################################
+## -- v0.1.5 to v0.1.5a - 2007/09/24 -- ##
+##########################################
+
+## -- files to edit: (1)
+	root/userlist.php
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+userlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+* @version $Id: userlist.php,v 0.8 24/02/2007 reddog Exp $
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+* @version $Id: userlist.php,v 0.9 18:21 24/09/2007 reddog Exp $
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+include($get->url('includes/class_rcs_set'));
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+include($get->url('includes/bbcode'));
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+if ( !empty($message) && $board_config['allow_sig'] )
+{
+	include_once($this->root . 'includes/bbcode.' . $this->ext);
+
+	// html process
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		if ( !empty($message) && $board_config['allow_sig'] )
+		{
+			// html process
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

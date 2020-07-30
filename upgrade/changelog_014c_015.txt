@@ -1,0 +1,490 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.5 ("The What Happens Next" edition)
+
+##########################################
+## -- v0.1.4c to v0.1.5 - 2007/02/24 -- ##
+##########################################
+
+## -- files to edit: (11)
+	memberlist.php
+	index.php
+	modcp.php
+	profile.php
+	search.php
+	userlist.php
+	viewforum.php
+	admin/admin_groups.php
+	admin/admin_ug_auth.php
+	includes/functions_post.php
+	includes/functions_search.php
+	includes/topic_review.php
+## -- files included:
+	root/admin/admin_rcs.php
+	root/admin/admin_rcs_settings.php
+	root/includes/class_rcs.php
+	root/templates/subSilver/rcs_stylesheet.css
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/*.* TO *.*
+#
+#-----[ OPEN ]------------------------------------------------
+#
+memberlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+if ( defined('RCS_USERLIST') )
+{
+	redirect($get->url('userlist', '', true));
+}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+# (just remove the lines)
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+index.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('profile
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$forum_moderators[$row['forum_id']][] = '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $row['user_id']), true) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$forum_moderators[$row['forum_id']][] = '<a href="' . append_sid('groupcp
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$forum_moderators[$row['forum_id']][] = '<a href="' . $get->url('groupcp', array(POST_GROUPS_URL => $row['group_id']), true) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'NEWEST_USER' =>
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		'NEWEST_USER' => sprintf($lang['Newest_user'], '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $newest_uid), true) . '"' . $newest_color . '>', $newest_user, '</a>'),
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$last_post .=
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+								$last_post .= ($forum_data[$j]['user_id'] == ANONYMOUS) ? ((($forum_data[$j]['post_username'] != '') ? $forum_data[$j]['post_username'] : $lang['Guest']) . '&nbsp;') : '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $forum_data[$j]['user_id']), true) . '"' . $style_color . '>' . $forum_data[$j]['username'] . '</a>&nbsp;';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+modcp.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$topic_author_color =
+			$topic_author =
+			$topic_author .=
+			$topic_author .= 
+
+			$first_post_time =
+
+			$last_post_author_color =
+			$last_post_author =
+
+			$last_post_url =
+
+			$views =
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+			$topic_author_color = $rcs->get_colors($row);
+			$topic_author = ($row['user_id'] != ANONYMOUS) ? '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $row['user_id']), true) . '"' . $topic_author_color .'>' : '';
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $lang['Guest']);
+			$topic_author .= ($row['user_id'] != ANONYMOUS) ? '</a>' : '';
+
+			$first_post_time = create_date($board_config['default_dateformat'], $row['topic_time'], $board_config['board_timezone']);
+
+			$last_post_author_color = $rcs->get_colors($row, '', false, 'group_id2', 'color2', 'level2');
+			$last_post_author = ($row['id2'] == ANONYMOUS) ? (($row['post_username2'] != '') ? $row['post_username2'] : $lang['Guest']) : '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $row['id2']), true) . '"' . $last_post_author_color . '>' . $row['user2'] . '</a>';
+
+			$last_post_url = '<a href="' . $get->url('viewtopic', array(POST_POST_URL => $row['topic_last_post_id']), true, $row['topic_last_post_id']) . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
+
+			$views = $row['topic_views'];
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+profile.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		include($phpbb_root_path . 'includes/usercp_viewprofile.'.$phpEx);
+		exit;
+MOD-*/
+//-- add
+		if ( defined('RCS_USERLIST') )
+		{
+			$userid =
+			if (
+			{
+				redirect(
+			}
+		}
+		else
+		{
+			include(
+			exit;
+		}
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		include($phpbb_root_path . 'includes/usercp_viewprofile.'.$phpEx);
+		exit;
+#
+#-----[ OPEN ]------------------------------------------------
+#
+search.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$poster = ($searchset[$i]['user_id'] != ANONYMOUS)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $searchset[$i]['user_id']), true) . '"' . $style_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$topic_author = ($searchset[$i]['user_id'] != ANONYMOUS)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$topic_author = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $searchset[$i]['user_id']), true) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $searchset[$i]['id2']), true) . '"' . $last_post_author_color . '>' . $searchset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+userlist.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+* @version $Id: userlist.php
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+* @version $Id: userlist.php,v 0.8 24/02/2007 reddog Exp $
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+include($phpbb_root_path . 'includes/class_rcs_set.' . $phpEx);
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+include($get->url('includes/class_rcs_set'));
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'session_time' =>
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				'session_time' => $this->data[$this->userid]['user_session_time'],
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+include($phpbb_root_path . 'includes/page_header.' . $phpEx);
+$template->pparse('body');
+include($phpbb_root_path . 'includes/page_tail.' . $phpEx);
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+include($get->url('includes/page_header'));
+$template->pparse('body');
+include($get->url('includes/page_tail'));
+#
+#-----[ OPEN ]------------------------------------------------
+#
+viewforum.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$moderators[] = '<a href="' . append_sid('profile
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$moderators[] = '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $row['user_id']), true) . '"' . $style_color . '>' . $row['username'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$moderators[] = '<a href="' . append_sid('groupcp
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+	$moderators[] = '<a href="' . $get->url('groupcp', array(POST_GROUPS_URL => $row['group_id']), true) . '"' . $style_color . '>' . $row['group_name'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$topic_author = ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $topic_rowset[$i]['user_id']), true) . '"' . $topic_author_color . '>' : '';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS)
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $lang['Guest']) : '<a href="' . $get->url('profile', array('mode' => 'viewprofile', POST_USERS_URL => $topic_rowset[$i]['id2']), true) . '"' . $last_post_author_color . '>' . $topic_rowset[$i]['user2'] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_groups.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+'S_GROUP_ACTION' =>
+));
+
+// send the display
+$template->pparse('body');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+		'S_GROUP_ACTION' => $get->url('admin/admin_groups', '', true),
+	));
+
+	// send the display
+	$template->pparse('body');
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+admin/admin_ug_auth.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$name = array();
+$id = array();
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	$ug_color = array();
+	$ug_ary = array();
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		for($i = 0; $i < count($ug_info); $i++)
+MOD-*/
+//-- add
+		for ( $i = 0; $i < count($name); $i++ )
+//-- fin mod : rank color system -----------------------------------------------
+		{
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- delete
+/*-MOD
+		for($i = 0; $i < count($ug_info); $i++)
+		{
+MOD-*/
+//-- add
+		for ( $i = 0; $i < count($name); $i++ )
+		{
+			$ug_ary = ( $mode == 'user' ) ? array('mode' => 'group', POST_GROUPS_URL => intval($id[$i])) : array('mode' => 'user', POST_USERS_URL => intval($id[$i]));
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$t_usergroup_list .=
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$t_usergroup_list .= ( ($t_usergroup_list != '') ? ', ' : '' ) . '<a href="' . $get->url('admin/admin_ug_auth', $ug_ary, true) . '"' . $ug_color[$i] . '>' . $name[$i] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+$t_pending_list .=
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+				$t_pending_list .= ( ($t_pending_list != '') ? ', ' : '' ) . '<a href="' . $get->url('admin/admin_ug_auth', $ug_ary, true) . '"' . $ug_color[$i] . '>' . $name[$i] . '</a>';
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/functions_post.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+function generate_smilies(
+{
+	global
+	global
+	global
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	global $get;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/functions_search.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+function username_search(
+{
+	global
+	global
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+# Add these lines on a new blank line after the preceding line(s) to find
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	global $get;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/topic_review.php
+#
+#-----[ FIND ]------------------------------------------------
+#
+# This may be a partial find and not the whole line(s)
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	global $rcs;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ REPLACE WITH ]----------------------------------------
+#
+//-- mod : rank color system ---------------------------------------------------
+//-- add
+	global $rcs, $get;
+//-- fin mod : rank color system -----------------------------------------------
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM

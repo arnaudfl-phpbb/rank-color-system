@@ -1,0 +1,21 @@
+## -- MOD Title: Rank Color System
+## -- MOD Author: reddog (N/A) http://www.reddevboard.com/
+## -- MOD Version: 0.1.4a ("The Merry Christmas" edition)
+
+##########################################
+## -- v0.1.4 to v0.1.4a - 2006/12/24 -- ##
+##########################################
+
+## -- files included:
+	root/userlist.php
+	root/includes/class_rcs.php
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+COPY root/userlist.php TO userlist.php
+COPY root/includes/class_rcs.php TO includes/class_rcs.php
+#
+#-----[ SAVE/CLOSE ALL FILES ]--------------------------------
+#
+# EoM
